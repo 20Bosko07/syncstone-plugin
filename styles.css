@@ -20,8 +20,8 @@
 
 .websync-pairing-code {
   font-family: var(--font-monospace);
-  font-size: 2em;
-  font-weight: 700;
+  font-size: 1.8em;
+  font-weight: var(--font-semibold);
   letter-spacing: 0.15em;
   text-align: center;
   padding: 0.4em 0;
@@ -82,10 +82,10 @@
 }
 
 .websync-storage-bar {
-  height: 6px;
-  margin-top: 6px;
+  height: 4px;
+  margin-top: 8px;
   overflow: hidden;
-  border-radius: 3px;
+  border-radius: 2px;
   background: var(--background-modifier-border);
 }
 
@@ -158,40 +158,38 @@
   pointer-events: none;
 }
 
-/* ---- Settings tab: collapsible sections ---------------------------------- */
+/* ---- Settings tab ---------------------------------------------------------
+   Stays close to Obsidian's own tabs: headings with plain rows below them. Only a status line at the top and the
+   collapsible groups (Advanced) are added. */
 
-/* Top of the tab: name, one status line, signed-in address. */
-.websync-hero {
-  margin-bottom: 14px;
-  padding: 16px 18px;
-  border: 1px solid var(--background-modifier-border);
+/* Top of the tab: one status line with the signed-in address on the right. */
+.websync-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  padding: 10px 14px;
   border-radius: var(--radius-m);
   background: var(--background-secondary);
 }
 
-.websync-hero-title {
-  font-size: var(--h2-size);
-  font-weight: 700;
-  line-height: 1.2;
+.websync-status-text {
+  font-weight: var(--font-medium);
 }
 
-.websync-hero-status {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 6px;
-}
-
-.websync-hero-sub {
-  margin-top: 2px;
+.websync-status-account {
+  margin-left: auto;
   color: var(--text-muted);
   font-size: var(--font-ui-small);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .websync-dot {
   flex: none;
-  width: 9px;
-  height: 9px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--text-faint);
 }
@@ -204,36 +202,25 @@
   background: var(--color-orange, #d98a00);
 }
 
-/* Every group is a card. */
+/* A group of rows under a heading. */
+.websync-group {
+  margin-bottom: 6px;
+}
+
+/* A collapsible group looks like a heading with a chevron. */
 .websync-section {
-  margin-top: 10px;
-  padding: 0 16px;
-  border: 1px solid var(--background-modifier-border);
-  border-radius: var(--radius-m);
-  background: var(--background-primary);
-}
-
-.websync-section > .websync-section-title {
-  padding: 13px 0;
-}
-
-.websync-section > .websync-section-body {
-  padding-bottom: 8px;
-}
-
-.websync-dropdown {
+  margin-top: 18px;
   border-top: 1px solid var(--background-modifier-border);
-  margin-top: 0.5em;
 }
 
 .websync-section-title {
   display: flex;
-  align-items: baseline;
-  gap: 0.6em;
-  padding: 0.7em 0;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 0 10px;
   cursor: pointer;
-  font-size: var(--h3-size);
-  font-weight: var(--h3-weight);
+  font-size: var(--font-ui-medium);
+  font-weight: var(--font-semibold);
   list-style: none;
 }
 
@@ -241,17 +228,16 @@
   display: none;
 }
 
-/* Chevron that turns when the section is open. */
+/* Chevron that turns when the group is open. */
 .websync-section-title::before {
   content: "";
   flex: none;
-  width: 0.45em;
-  height: 0.45em;
+  width: 0.4em;
+  height: 0.4em;
   border-right: 2px solid var(--text-muted);
   border-bottom: 2px solid var(--text-muted);
   transform: rotate(-45deg);
   transition: transform 0.15s ease;
-  align-self: center;
 }
 
 details[open] > .websync-section-title::before {
@@ -265,16 +251,17 @@ details[open] > .websync-section-title::before {
   font-weight: normal;
 }
 
+/* A dropdown inside a group (what to sync). */
 .websync-dropdown {
-  margin-left: 0.5em;
-  padding-left: 0.75em;
+  margin: 4px 0 8px 4px;
+  padding-left: 12px;
   border-left: 2px solid var(--background-modifier-border);
-  border-top: none;
 }
 
 .websync-dropdown > .websync-section-title {
-  font-size: var(--font-ui-medium);
-  font-weight: 600;
+  padding: 8px 0;
+  font-size: var(--font-ui-small);
+  font-weight: var(--font-medium);
 }
 
 /* Progress ring next to a file in the explorer while it uploads/downloads (only for transfers longer than ~2 s). */

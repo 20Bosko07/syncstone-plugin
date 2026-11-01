@@ -48,7 +48,7 @@ export class WebSyncSettingsTab extends PluginSettingTab {
    * Which collapsible sections are open. Kept on the tab (not re-derived) because
    * every state change re-renders the whole tab via display().
    */
-  private readonly openSections = new Set<string>(["account", "vault", "sync"]);
+  private readonly openSections = new Set<string>();
 
   // --- Account / device-pairing state ---
   private deviceName = "";
@@ -81,7 +81,7 @@ export class WebSyncSettingsTab extends PluginSettingTab {
     const { containerEl } = this;
     containerEl.empty();
     containerEl.addClass("websync-settings");
-    this.renderHero(containerEl);
+    this.renderStatus(containerEl);
 
     this.renderAccountSection(containerEl);
     this.renderVaultLinkSection(containerEl);
@@ -91,8 +91,8 @@ export class WebSyncSettingsTab extends PluginSettingTab {
     this.renderAdvancedSection(containerEl);
   }
 
-  /** The top of the tab: name and one line that says where things stand (not signed in / locked / connected). */
-  private renderHero(parent: HTMLElement): void {
+  /** The top of the tab: one line that says where things stand (not signed in / locked / connected). */
+  private renderStatus(parent: HTMLElement): void {
     const settings = this.plugin.settings;
     let tone: "off" | "warn" | "ok" = "off";
     let text = t("p.hero.signedOut");
@@ -108,21 +108,24 @@ export class WebSyncSettingsTab extends PluginSettingTab {
         text = t("p.hero.connected", { vault: settings.linkedVault.vaultName });
       }
     }
-    const hero = parent.createDiv({ cls: "websync-hero" });
-    hero.createDiv({ cls: "websync-hero-title", text: "Syncstone" });
-    const line = hero.createDiv({ cls: "websync-hero-status" });
-    line.createSpan({ cls: `websync-dot is-${tone}` });
-    line.createSpan({ text });
-    if (settings.accountUsername && settings.sessionToken) hero.createDiv({ cls: "websync-hero-sub", text: settings.accountUsername });
+    const status = parent.createDiv({ cls: "websync-status" });
+    status.createSpan({ cls: `websync-dot is-${tone}` });
+    status.createSpan({ cls: "websync-status-text", text });
+    if (settings.accountUsername && settings.sessionToken) status.createSpan({ cls: "websync-status-account", text: settings.accountUsername });
   }
 
   /**
-   * A collapsible group (native <details>, so it works with touch and keyboard
-   * and needs no extra library). Returns the element to render the group's
-   * settings into. `nested` gives the lighter style used for a dropdown inside
-   * a section.
+   * A group of settings under a heading, the way Obsidian's own tabs and most plugins do it. Returns the element to
+   * render the group's settings into. `collapsible` (native <details>, so it works with touch and keyboard) is for the
+   * rarely needed groups; `nested` is a lighter dropdown inside a group.
    */
-  private section(parent: HTMLElement, id: string, title: string, options: { nested?: boolean; summary?: string } = {}): HTMLElement {
+  private section(parent: HTMLElement, id: string, title: string, options: { nested?: boolean; collapsible?: boolean; summary?: string } = {}): HTMLElement {
+    if (!options.nested && !options.collapsible) {
+      const group = parent.createDiv({ cls: "websync-group" });
+      new Setting(group).setName(title).setHeading();
+      return group;
+    }
+
     const details = parent.createEl("details", { cls: options.nested ? "websync-dropdown" : "websync-section" });
     details.open = this.openSections.has(id);
     details.addEventListener("toggle", () => {
@@ -543,7 +546,7 @@ export class WebSyncSettingsTab extends PluginSettingTab {
 
     const planBytes = info.plans.find((plan) => plan.id === (info.plan ?? info.compedPlan))?.quotaBytes ?? null;
     const stateLabel = t(`p.plan.state.${info.state}`) + (planBytes ? ` · ${formatBytes(planBytes)}` : "");
-    const containerEl = this.section(parent, "plan", t("p.plan.title"), { summary: stateLabel });
+    const containerEl = this.section(parent, "plan", t("p.plan.title"));
     const date = (iso: string) => new Date(iso).toLocaleDateString();
     const webUrl = (this.plugin.account?.webUrl ?? this.plugin.serverUrl).replace(/\/+$/, "");
     const openPlanPage = () => openExternal(`${webUrl}/account/billing`);
@@ -848,9 +851,7 @@ export class WebSyncSettingsTab extends PluginSettingTab {
 
   private renderConfigSyncSection(parent: HTMLElement): void {
     const config = this.plugin.settings.configSync;
-    const containerEl = this.section(parent, "config", t("p.syncSettings"), {
-      summary: config.enabled ? "an" : "aus",
-    });
+    const containerEl = this.section(parent, "config", t("p.syncSettings"));
     containerEl.createEl("p", {
       cls: "setting-item-description",
       text: t("p.syncSettingsHint"),
@@ -925,6 +926,7 @@ export class WebSyncSettingsTab extends PluginSettingTab {
   private renderAdvancedSection(parent: HTMLElement): void {
     const settings = this.plugin.settings;
     const containerEl = this.section(parent, "advanced", t("p.advanced"), {
+      collapsible: true,
       summary: settings.selfHosted ? t("p.server.own") : undefined,
     });
     // The session belongs to one server: the choice can only change while signed out.
