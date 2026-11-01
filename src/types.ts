@@ -92,6 +92,12 @@ export interface WebSyncSettings {
   /** Only ever populated when `rememberKey` is true. */
   cachedKeyMaterial: CachedKeyMaterial | null;
 
+  /**
+   * The user confirmed the backup notice (sync tools can make mistakes: make a backup first). Nothing is synced before.
+   * Installs from before the notice existed count as confirmed.
+   */
+  backupAcknowledged: boolean;
+
   syncPaused: boolean;
   lastSyncAt: string | null;
 
@@ -123,6 +129,8 @@ export const DEFAULT_SETTINGS: WebSyncSettings = {
 
   rememberKey: false,
   cachedKeyMaterial: null,
+
+  backupAcknowledged: false,
 
   syncPaused: false,
   lastSyncAt: null,

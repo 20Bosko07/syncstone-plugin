@@ -25,6 +25,7 @@ import { HISTORY_VIEW_TYPE, HistoryView } from "./ui/HistoryView.js";
 import { PublishService } from "./publish/PublishService.js";
 import { PublishModal } from "./ui/PublishModal.js";
 import { SyncLogModal } from "./ui/SyncLogModal.js";
+import { BackupNoticeModal } from "./ui/BackupNoticeModal.js";
 import { HISTORY_DIFF_VIEW_TYPE, HistoryDiffView } from "./ui/HistoryDiffView.js";
 
 export default class WebSyncPlugin extends Plugin {
@@ -157,8 +158,29 @@ export default class WebSyncPlugin extends Plugin {
     // fully built - `vault.getFiles()` and vault events are not reliable
     // before layout-ready fires.
     this.app.workspace.onLayoutReady(() => {
+      // Right after the installation: the backup notice comes before anything else.
+      if (!this.settings.backupAcknowledged) this.showBackupNotice();
       void this.tryStartSync();
     });
+  }
+
+  private backupNoticeOpen = false;
+
+  /** The backup notice (see BackupNoticeModal); confirming it starts the sync. */
+  showBackupNotice(): void {
+    if (this.backupNoticeOpen || this.settings.backupAcknowledged) return;
+    this.backupNoticeOpen = true;
+    new BackupNoticeModal(
+      this.app,
+      async () => {
+        this.settings.backupAcknowledged = true;
+        await this.saveSettings();
+        await this.tryStartSync();
+      },
+      () => {
+        this.backupNoticeOpen = false;
+      },
+    ).open();
   }
 
   openSyncLog(): void {
@@ -266,6 +288,8 @@ export default class WebSyncPlugin extends Plugin {
       const own = normalizeServerUrl(stored.serverUrl ?? "");
       this.settings.selfHosted = own !== "" && own !== normalizeServerUrl(HOSTED_SERVER_URL);
     }
+    // Installs from before the backup notice existed already sync: it does not stop them.
+    if (stored.backupAcknowledged === undefined && (stored.sessionToken || stored.linkedVault)) this.settings.backupAcknowledged = true;
   }
 
   /** The API server in use: the user's own one while self-hosting is on, else the hosted service. */
@@ -287,6 +311,12 @@ export default class WebSyncPlugin extends Plugin {
   async tryStartSync(): Promise<void> {
     this.stopSync();
     if (!this.settings.sessionToken || !this.settings.linkedVault) return;
+    // Nothing is synced before the backup notice was confirmed.
+    if (!this.settings.backupAcknowledged) {
+      this.showBackupNotice();
+      this.statusBar?.refresh();
+      return;
+    }
 
     if (!this.cryptoService.isUnlocked()) {
       const remembered = await this.tryUnlockFromCache();
@@ -549,6 +579,10 @@ export default class WebSyncPlugin extends Plugin {
   }
 
   async runManualSync(): Promise<void> {
+    if (!this.settings.backupAcknowledged) {
+      this.showBackupNotice();
+      return;
+    }
     if (!this.syncEngine) {
       new Notice(t("p.noVaultOrPaused"));
       return;
