@@ -14,8 +14,8 @@
 <p align="center">
   <a href="https://syncst.one">Website</a> ·
   <a href="#install">Install</a> ·
-  <a href="https://github.com/20Bosko07/syncstone-plugin/releases/latest">Latest release</a> ·
-  <a href="https://github.com/20Bosko07/websync">Self-hosting</a>
+  <a href="#getting-started">Getting started</a> ·
+  <a href="mailto:support@syncst.one">Support</a>
 </p>
 
 <p align="center">
@@ -24,12 +24,11 @@
 
 # Syncstone for Obsidian
 
-Syncs your Obsidian vaults end-to-end encrypted - with the hosted service at [syncst.one](https://syncst.one) (the
-default) or with a **Syncstone server** you run yourself (see the [`websync`](https://github.com/20Bosko07/websync)
-repository; switch it on under *Advanced* in the plugin settings).
+Syncstone keeps your Obsidian vault in sync on all your devices, end-to-end encrypted. Your notes are encrypted on your
+device before they leave it, so only you can read them.
 
 - **Encrypted on your device.** The server only ever stores ciphertext.
-- **Every device.** Desktop and mobile, plus your vault in any browser - no Obsidian needed.
+- **Every device.** Desktop and mobile, plus your vault in any browser. No Obsidian needed.
 - **Live collaboration.** Several people, one note, every cursor, in real time.
 - **Sharing.** Share whole vaults or send a single note as a link.
 - **History.** Version history, trash and restore.
@@ -44,58 +43,32 @@ repository; switch it on under *Advanced* in the plugin settings).
 2. Open the BRAT settings, choose **Add beta plugin** and enter `https://github.com/20Bosko07/syncstone-plugin`.
 3. Enable **Syncstone** under Settings -> Community plugins.
 
-BRAT keeps the plugin up to date with the releases of this repository.
+BRAT keeps the plugin up to date.
 
 ## Getting started
 
 1. Open the Syncstone settings and press **Sign in in the browser**.
-2. In the browser, sign in (or create an account at [syncst.one](https://syncst.one) - it starts with a free 14-day
+2. In the browser, sign in (or create an account at [syncst.one](https://syncst.one), it starts with a free 14-day
    trial), approve the device and pick a vault.
 3. Back in Obsidian, enter your vault passphrase once. Syncing starts.
 
 **Make a backup first.** Sync tools can make mistakes. The plugin asks you to confirm that you have a backup of your
 vault before it syncs anything.
 
-Running your own server? Switch on self-hosting under *Advanced*, enter the address of your server's API and sign in the
-same way.
+Self-hosting is coming soon.
 
-## Disclosures (Obsidian developer policies)
+## Privacy and transparency
 
-- **Network use:** the plugin talks only to a Syncstone server: the hosted service by default, or the address of your own
-  server if you switch on self-hosting in the settings. There is no telemetry, no analytics and no other third-party
-  request.
-- **Account required:** you need an account on a Syncstone server. Self-hosting is free; the hosted service is paid after
-  the free trial.
+- **Network use:** the plugin talks only to the Syncstone service. There is no telemetry, no analytics and no other
+  third-party request.
+- **Account required:** you need a Syncstone account. It starts with a free trial, afterwards the service is paid.
 - **No self-update:** the plugin never downloads or runs code other than what Obsidian installed.
 - **Lost passphrase = lost data:** the encryption key is derived from your vault passphrase and never leaves your device.
+  Syncstone cannot reset it.
 
-## Development
+## Support
 
-```bash
-pnpm install
-pnpm dev          # esbuild watch -> main.js
-pnpm build        # typecheck + production bundle
-pnpm test         # tests of the shared crypto/protocol code
-```
-
-Copy `manifest.json`, `main.js` and `styles.css` to `<vault>/.obsidian/plugins/websync/` to try it.
-
-### `shared/`
-
-`shared/` is the crypto and wire-protocol code that the plugin and the Syncstone server must agree on byte for byte.
-It is **copied** from the server repository, never edited here:
-
-```bash
-pnpm sync-shared ../websync
-```
-
-## Releasing
-
-1. Bump `version` in `manifest.json` and add the version to `versions.json`.
-2. Tag the commit with exactly that version (`git tag 0.1.1 && git push --tags`, no leading `v`).
-3. The `release` workflow builds and attaches `main.js`, `manifest.json` and `styles.css` to a GitHub release.
-
-The plugin `id` (`websync`) must never change once users have installed it.
+Questions or problems? Write to [support@syncst.one](mailto:support@syncst.one).
 
 ## License
 
