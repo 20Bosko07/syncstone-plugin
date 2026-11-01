@@ -1,6 +1,6 @@
 import { showsPlanSection } from "../sync/billing.js";
 import { t } from "../i18n/index.js";
-import { App, Notice, Platform, PluginSettingTab, Setting, type TextComponent } from "obsidian";
+import { App, Notice, Platform, PluginSettingTab, Setting, setIcon, type TextComponent } from "obsidian";
 import { defaultDeviceName } from "../deviceName.js";
 import type WebSyncPlugin from "../main.js";
 import type { LinkedVaultConfig } from "../types.js";
@@ -95,21 +95,25 @@ export class WebSyncSettingsTab extends PluginSettingTab {
   private renderStatus(parent: HTMLElement): void {
     const settings = this.plugin.settings;
     let tone: "off" | "warn" | "ok" = "off";
+    let icon = "log-in";
     let text = t("p.hero.signedOut");
     if (settings.sessionToken) {
       if (!settings.linkedVault) {
         tone = "warn";
+        icon = "unlink";
         text = t("p.hero.noVault");
       } else if (!this.plugin.cryptoService.isUnlocked()) {
         tone = "warn";
+        icon = "lock";
         text = t("p.hero.locked", { vault: settings.linkedVault.vaultName });
       } else {
         tone = "ok";
+        icon = "check";
         text = t("p.hero.connected", { vault: settings.linkedVault.vaultName });
       }
     }
     const status = parent.createDiv({ cls: "websync-status" });
-    status.createSpan({ cls: `websync-dot is-${tone}` });
+    setIcon(status.createSpan({ cls: `websync-status-icon is-${tone}` }), icon);
     status.createSpan({ cls: "websync-status-text", text });
     if (settings.accountUsername && settings.sessionToken) status.createSpan({ cls: "websync-status-account", text: settings.accountUsername });
   }

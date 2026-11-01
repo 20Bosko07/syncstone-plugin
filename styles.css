@@ -186,20 +186,23 @@
   white-space: nowrap;
 }
 
-.websync-dot {
+.websync-status-icon {
+  display: flex;
   flex: none;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--text-faint);
+  color: var(--text-muted);
 }
 
-.websync-dot.is-ok {
-  background: var(--color-green, #3fb950);
+.websync-status-icon svg {
+  width: 16px;
+  height: 16px;
 }
 
-.websync-dot.is-warn {
-  background: var(--color-orange, #d98a00);
+.websync-status-icon.is-ok {
+  color: var(--color-green, #3fb950);
+}
+
+.websync-status-icon.is-warn {
+  color: var(--color-orange, #d98a00);
 }
 
 /* A group of rows under a heading. */
