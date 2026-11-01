@@ -568,6 +568,7 @@ export class WebSyncSettingsTab extends PluginSettingTab {
       fill.style.width = `${percent}%`;
       if (used >= quota) fill.addClass("is-full");
       else if (used >= quota * 0.8) fill.addClass("is-nearly");
+      if (used >= quota && info.state !== "read_only" && info.state !== "expired") storage.descEl.createDiv({ cls: "websync-storage-warning", text: t("p.storageFull") });
     }
 
     // State of the subscription, with what happens next.
@@ -615,7 +616,8 @@ export class WebSyncSettingsTab extends PluginSettingTab {
             .onClick(() => void this.unlinkVault()),
         );
 
-      this.renderStorageSetting(containerEl);
+      // On the hosted service the plan section below shows the storage; a self-hosted server has no plan section.
+      if (!showsPlanSection(this.plugin.billing)) this.renderStorageSetting(containerEl);
 
       if (!this.plugin.cryptoService.isUnlocked()) {
         this.renderUnlockForm(containerEl, linked);
@@ -779,8 +781,6 @@ export class WebSyncSettingsTab extends PluginSettingTab {
 
   private renderSyncStatusSection(parent: HTMLElement): void {
     const containerEl = this.section(parent, "sync", t("p.syncStatus"));
-
-    if (this.plugin.settings.sessionToken) this.renderStorageSetting(containerEl);
 
     new Setting(containerEl)
       .setName(t("p.lastSync"))

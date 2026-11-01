@@ -1,7 +1,7 @@
 {
   "id": "websync",
   "name": "Syncstone",
-  "version": "0.2.15",
+  "version": "0.2.16",
   "minAppVersion": "1.4.0",
   "description": "End-to-end encrypted vault sync with Syncstone.",
   "author": "Syncstone",
