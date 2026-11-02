@@ -20,13 +20,16 @@ interface AwarenessState {
   user?: { name?: string; color?: string; colorLight?: string };
 }
 
-/** What y-codemirror.next keeps in its facet (the package ships no types for it). */
+/** What y-codemirror.next keeps in its facet (its typings differ between versions, so the value is narrowed here). */
 interface YSyncConfig {
   ytext: Y.Text;
   awareness: Awareness;
 }
 
-const syncConfig = (state: EditorState): YSyncConfig => state.facet(ySyncFacet) as YSyncConfig;
+const syncConfig = (state: EditorState): YSyncConfig => {
+  const config: unknown = state.facet(ySyncFacet);
+  return config as YSyncConfig;
+};
 
 class RemoteCaretWidget extends WidgetType {
   constructor(

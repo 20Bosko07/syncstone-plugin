@@ -116,9 +116,9 @@ export class LocalIndex {
     return this.request<LocalIndexRecord[]>(this.store("readonly").getAll());
   }
 
-  private request<T>(req: IDBRequest<T>): Promise<T> {
+  private request<T>(req: IDBRequest): Promise<T> {
     return new Promise((resolve, reject) => {
-      req.onsuccess = () => resolve(req.result);
+      req.onsuccess = () => resolve(req.result as T);
       req.onerror = () => reject(req.error ?? new Error("Syncstone: IndexedDB-Anfrage fehlgeschlagen."));
     });
   }
