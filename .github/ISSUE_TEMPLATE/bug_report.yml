@@ -79,7 +79,7 @@ body:
     id: sync-log
     attributes:
       label: Sync log
-      description: Open the command palette and run "Syncstone: Open sync log". Paste the lines around the problem and black out private file names.
+      description: 'Open the command palette and run "Syncstone: Open sync log". Paste the lines around the problem and black out private file names.'
       render: text
   - type: checkboxes
     id: checks
