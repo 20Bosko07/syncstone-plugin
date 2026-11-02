@@ -3,7 +3,8 @@ import { t } from "../i18n/index.js";
 
 /**
  * Shown once after the plugin was installed, before anything is synced: sync tools can make mistakes, so the user makes a
- * backup first. "Start syncing" is the confirmation; "Not now" keeps sync switched off and asks again next time.
+ * backup first. "Start syncing" is the confirmation; "Not now" keeps sync switched off and asks again next time;
+ * until then the settings tab and the status menu offer the same confirmation.
  */
 export class BackupNoticeModal extends Modal {
   constructor(
@@ -17,6 +18,7 @@ export class BackupNoticeModal extends Modal {
   onOpen(): void {
     this.titleEl.setText(t("p.backup.title"));
     this.contentEl.createEl("p", { text: t("p.backup.text") });
+    this.contentEl.createEl("p", { text: t("p.backup.laterHint"), cls: "setting-item-description" });
     new Setting(this.contentEl)
       .addButton((button) => button.setButtonText(t("p.backup.later")).onClick(() => this.close()))
       .addButton((button) =>

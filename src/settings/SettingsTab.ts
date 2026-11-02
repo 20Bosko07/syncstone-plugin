@@ -116,6 +116,19 @@ export class SyncstoneSettingsTab extends PluginSettingTab {
     setIcon(status.createSpan({ cls: `syncstone-status-icon is-${tone}` }), icon);
     status.createSpan({ cls: "syncstone-status-text", text });
     if (settings.accountUsername && settings.sessionToken) status.createSpan({ cls: "syncstone-status-account", text: settings.accountUsername });
+
+    // "Not now" on the backup notice: sync stays off until it is confirmed here (or in the status menu).
+    if (!settings.backupAcknowledged) {
+      new Setting(parent)
+        .setName(t("p.backup.title"))
+        .setDesc(t("p.backup.pending"))
+        .addButton((btn) =>
+          btn
+            .setButtonText(t("p.backup.confirm"))
+            .setCta()
+            .onClick(() => void this.plugin.acknowledgeBackup()),
+        );
+    }
   }
 
   /**
@@ -468,7 +481,23 @@ export class SyncstoneSettingsTab extends PluginSettingTab {
       this.pendingUnlockVaultId = vaultId;
     }
 
+    // Coming back from the browser the user may not see the settings tab: say it worked and what is still missing.
+    const needsPassphrase = this.pendingUnlockVaultId !== null || !this.plugin.cryptoService.isUnlocked();
+    new Notice(t(needsPassphrase ? "p.pair.connectedEnterPass" : "p.pair.connected"), needsPassphrase ? 10000 : undefined);
+    if (needsPassphrase) this.openOwnTab();
+
     this.display();
+  }
+
+  /** Brings Obsidian's settings to this plugin's tab (e.g. after the pairing so the passphrase form is in view). */
+  private openOwnTab(): void {
+    const setting = (this.app as unknown as { setting?: { open(): void; openTabById(id: string): void } }).setting;
+    try {
+      setting?.open();
+      setting?.openTabById(this.plugin.manifest.id);
+    } catch (err) {
+      console.error("Syncstone: Einstellungen konnten nicht geöffnet werden", err);
+    }
   }
 
   private async logout(): Promise<void> {

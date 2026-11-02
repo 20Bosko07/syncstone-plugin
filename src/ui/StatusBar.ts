@@ -105,6 +105,15 @@ export class SyncstoneStatusBar {
       );
     }
 
+    if (!this.plugin.settings.backupAcknowledged) {
+      menu.addItem((item) =>
+        item
+          .setTitle(t("p.backup.confirm"))
+          .setIcon("play")
+          .onClick(() => void this.plugin.acknowledgeBackup()),
+      );
+    }
+
     if (status.kind === "locked") {
       menu.addItem((item) =>
         item
