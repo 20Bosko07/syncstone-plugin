@@ -1,9 +1,9 @@
 {
   "name": "websync-plugin",
-  "version": "0.2.16",
+  "version": "0.2.17",
   "private": true,
   "type": "module",
-  "description": "End-to-end encrypted vault sync with your own Syncstone server.",
+  "description": "Sync your vault across devices with end-to-end encryption.",
   "packageManager": "pnpm@12.4.2",
   "scripts": {
     "dev": "node esbuild.config.mjs",

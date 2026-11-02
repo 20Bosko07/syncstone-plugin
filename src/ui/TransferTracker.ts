@@ -57,7 +57,7 @@ export class TransferTracker {
   private readonly transfers = new Map<string, Transfer>();
   /** Files that could not be uploaded / downloaded and will not be retried by themselves (too big, refused, an error): why. */
   private readonly failed = new Map<string, string>();
-  private clearTimer: ReturnType<typeof setTimeout> | null = null;
+  private clearTimer: number | null = null;
 
   /**
    * `delayMs`: how long a running transfer takes before it gets a circle (a tiny file is done before that - no flash).
@@ -216,7 +216,7 @@ export class TransferTracker {
     if (this.transfers.size === 0 || this.active) return;
     this.cancelClear();
     // The batch is over: let the full rings stay for a moment, then take them all away.
-    this.clearTimer = setTimeout(() => {
+    this.clearTimer = window.setTimeout(() => {
       this.clearTimer = null;
       if (!this.active) this.transfers.clear();
     }, LINGER_MS);
@@ -224,7 +224,7 @@ export class TransferTracker {
 
   private cancelClear(): void {
     if (this.clearTimer !== null) {
-      clearTimeout(this.clearTimer);
+      window.clearTimeout(this.clearTimer);
       this.clearTimer = null;
     }
   }

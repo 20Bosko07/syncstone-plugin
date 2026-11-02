@@ -55,13 +55,20 @@ BRAT keeps the plugin up to date.
 **Make a backup first.** Sync tools can make mistakes. The plugin asks you to confirm that you have a backup of your
 vault before it syncs anything.
 
-Self-hosting is coming soon.
+Self-hosting is coming soon. Requires Obsidian 1.8.7 or newer.
 
 ## Privacy and transparency
 
-- **Network use:** the plugin talks only to the Syncstone service. There is no telemetry, no analytics and no other
-  third-party request.
-- **Account required:** you need a Syncstone account. It starts with a free trial, afterwards the service is paid.
+- **Network use:** the plugin talks only to the Syncstone service at `syncst.one`, to sync your encrypted vault. There is
+  no telemetry, no analytics and no other third-party request.
+- **Account required:** you need a Syncstone account to use the plugin.
+- **Payment required:** a new account starts with a free 14-day trial. Afterwards a paid plan is required, see
+  [syncst.one/pricing](https://syncst.one/pricing).
+- **Source code:** this plugin is open source (MIT). The Syncstone server is **closed source**. A self-hosted
+  version of the server is planned and will follow.
+- **Data on the server:** the server stores only encrypted vault content plus technical metadata and account data.
+  How it is handled is described in the [privacy policy](https://syncst.one/datenschutz). The
+  [terms of service](https://syncst.one/agb) apply to the service.
 - **No self-update:** the plugin never downloads or runs code other than what Obsidian installed.
 - **Lost passphrase = lost data:** the encryption key is derived from your vault passphrase and never leaves your device.
   Syncstone cannot reset it.
@@ -75,6 +82,8 @@ Questions or problems? Write to [support@syncst.one](mailto:support@syncst.one).
 MIT, see [LICENSE](LICENSE). The copyright notice and the licence text must stay with every copy of the code.
 
 The name "Syncstone", the logo and the syncst.one domain are not part of the licence: a fork needs its own name and logo.
+
+Syncstone is an independent project and is not affiliated with or endorsed by Obsidian. "Obsidian" is a trademark of its owner.
 
 ---
 
