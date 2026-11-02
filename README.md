@@ -35,7 +35,7 @@ device before they leave it, so only you can read them.
 
 ## Install
 
-**Community plugins (coming soon):** Obsidian -> Settings -> Community plugins -> Browse -> search for *Syncstone*.
+**Community plugins:** Obsidian -> Settings -> Community plugins -> Browse -> search for *Syncstone*.
 
 **Today, with [BRAT](https://github.com/TfTHacker/obsidian42-brat):**
 
@@ -55,7 +55,7 @@ BRAT keeps the plugin up to date.
 **Make a backup first.** Sync tools can make mistakes. The plugin asks you to confirm that you have a backup of your
 vault before it syncs anything.
 
-Self-hosting is coming soon. Requires Obsidian 1.8.7 or newer.
+A self-hosted version of the server is planned. Requires Obsidian 1.8.7 or newer.
 
 ## Privacy and transparency
 
