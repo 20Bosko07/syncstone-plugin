@@ -1,0 +1,92 @@
+name: Bug report
+description: Something in the Syncstone plugin does not work as it should.
+title: "[Bug] "
+labels: ["bug", "needs triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time. A good report gets a fix much faster.
+
+        **Your notes are private, keep them that way.** Never paste note content, your vault passphrase, session tokens or other people's e-mail addresses into an issue. Black out file names you do not want to share.
+
+        Problems with your account, a payment or the Syncstone service itself belong at support@syncst.one, not here.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Where does it happen?
+      options:
+        - Sync (files do not arrive, wrong content, conflicts)
+        - Live collaboration
+        - Sharing and published notes
+        - Version history and trash
+        - Sign in and device pairing
+        - Settings
+        - Mobile only
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Say what you saw. Screenshots help, as long as they show no private notes.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: How can we make it happen again?
+      placeholder: |
+        1. Open ...
+        2. Edit ...
+        3. Wait for sync ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect instead?
+  - type: input
+    id: plugin-version
+    attributes:
+      label: Syncstone plugin version
+      description: Settings > Community plugins > Syncstone.
+      placeholder: "0.2.17"
+    validations:
+      required: true
+  - type: input
+    id: obsidian-version
+    attributes:
+      label: Obsidian version
+      description: Settings > General > About.
+      placeholder: "1.8.7"
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Device
+      options:
+        - Windows
+        - macOS
+        - Linux
+        - iPhone or iPad
+        - Android
+    validations:
+      required: true
+  - type: textarea
+    id: sync-log
+    attributes:
+      label: Sync log
+      description: Open the command palette and run "Syncstone: Open sync log". Paste the lines around the problem and black out private file names.
+      render: text
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before you send it
+      options:
+        - label: I searched the existing issues and did not find this one.
+          required: true
+        - label: This report contains no private notes, passphrases or tokens.
+          required: true
