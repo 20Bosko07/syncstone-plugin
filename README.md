@@ -40,7 +40,7 @@ device before they leave it, so only you can read them.
 **Today, with [BRAT](https://github.com/TfTHacker/obsidian42-brat):**
 
 1. Install **BRAT** from Settings -> Community plugins -> Browse and enable it.
-2. Open the BRAT settings, choose **Add beta plugin** and enter `https://github.com/20Bosko07/syncstone-plugin`.
+2. Open the BRAT settings, choose **Add beta plugin** and enter `https://github.com/syncst-one/syncstone-plugin`.
 3. Enable **Syncstone** under Settings -> Community plugins.
 
 BRAT keeps the plugin up to date.
