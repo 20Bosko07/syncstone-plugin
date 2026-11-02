@@ -9,7 +9,7 @@ pnpm build        # typecheck + production bundle
 pnpm test         # tests of the shared crypto/protocol code
 ```
 
-Copy `manifest.json`, `main.js` and `styles.css` to `<vault>/.obsidian/plugins/websync/` to try it.
+Copy `manifest.json`, `main.js` and `styles.css` to `<vault>/.obsidian/plugins/syncstone/` to try it.
 
 ## `shared/`
 
@@ -26,4 +26,4 @@ pnpm sync-shared ../websync
 2. Tag the commit with exactly that version (`git tag 0.1.1 && git push --tags`, no leading `v`).
 3. The `release` workflow builds and attaches `main.js`, `manifest.json` and `styles.css` to a GitHub release.
 
-The plugin `id` (`websync`) must never change once users have installed it.
+The plugin `id` (`syncstone`) is the address of the plugin in the Obsidian directory and must never change again once users have installed it. Until 0.2.17 it was `websync`.
