@@ -15,12 +15,12 @@
  */
 import { t } from "../i18n/index.js";
 import { ItemView, MarkdownView, Menu, Platform, setIcon, setTooltip } from "obsidian";
-import type WebSyncPlugin from "../main.js";
+import type SyncstonePlugin from "../main.js";
 import type { CollabPresence } from "../collab/CollabManager.js";
-import { describeStatus, type WebSyncStatusBar } from "./StatusBar.js";
+import { describeStatus, type SyncstoneStatusBar } from "./StatusBar.js";
 
 const REFRESH_INTERVAL_MS = 1000;
-const ACTION_CLASS = "websync-header-action";
+const ACTION_CLASS = "syncstone-header-action";
 /** The phone's header is narrow: fewer avatars there (the rest is counted in "+N"). */
 const maxAvatars = (): number => (Platform.isMobile ? 2 : 3);
 
@@ -30,13 +30,13 @@ interface HeaderAction {
   signature: string;
 }
 
-export class WebSyncHeaderActions {
+export class SyncstoneHeaderActions {
   private readonly actions = new Map<ItemView, HeaderAction>();
   private timer: ReturnType<typeof window.setInterval> | null = null;
 
   constructor(
-    private readonly plugin: WebSyncPlugin,
-    private readonly statusBar: WebSyncStatusBar,
+    private readonly plugin: SyncstonePlugin,
+    private readonly statusBar: SyncstoneStatusBar,
   ) {}
 
   start(): void {
@@ -109,21 +109,21 @@ export class WebSyncHeaderActions {
     el.empty();
     el.show();
 
-    const iconEl = el.createSpan({ cls: "websync-header-icon" });
+    const iconEl = el.createSpan({ cls: "syncstone-header-icon" });
     setIcon(iconEl, described.icon);
-    iconEl.toggleClass("websync-status-icon-spin", described.spin);
-    iconEl.toggleClass("websync-status-icon-alert", described.alert ?? false);
+    iconEl.toggleClass("syncstone-status-icon-spin", described.spin);
+    iconEl.toggleClass("syncstone-status-icon-alert", described.alert ?? false);
 
     let tooltip = described.tooltip;
     if (presence && presence.length > 0) {
-      const avatars = el.createSpan({ cls: "websync-avatars" });
+      const avatars = el.createSpan({ cls: "syncstone-avatars" });
       const shown = maxAvatars();
       for (const peer of presence.slice(0, shown)) {
-        const avatar = avatars.createSpan({ cls: "websync-avatar", text: initialOf(peer.name) });
+        const avatar = avatars.createSpan({ cls: "syncstone-avatar", text: initialOf(peer.name) });
         avatar.style.backgroundColor = peer.color;
       }
       if (presence.length > shown) {
-        avatars.createSpan({ cls: "websync-avatar websync-avatar-more", text: `+${presence.length - shown}` });
+        avatars.createSpan({ cls: "syncstone-avatar syncstone-avatar-more", text: `+${presence.length - shown}` });
       }
       const live = t("p.liveWith", { names: presence.map((peer) => peer.name).join(", ") });
       tooltip = `${tooltip} · ${live}`;

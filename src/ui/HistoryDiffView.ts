@@ -1,10 +1,10 @@
 import { currentLocale, t } from "../i18n/index.js";
 import { ItemView, Notice, TFile, normalizePath, setIcon, type WorkspaceLeaf } from "obsidian";
 import { actionLabel, diffLines, fromBase64, numberDiffLines, unpackBlob, whoLabel, withContext, type RevisionEntry } from "@websync/shared";
-import type WebSyncPlugin from "../main.js";
+import type SyncstonePlugin from "../main.js";
 import { baseName, decoder, extOf, formatBytes, IMAGE_EXT, MAX_PREVIEW_BYTES, parentOf, TEXT_EXT } from "./historyFormat.js";
 
-export const HISTORY_DIFF_VIEW_TYPE = "websync-history-diff";
+export const HISTORY_DIFF_VIEW_TYPE = "syncstone-history-diff";
 
 /**
  * Main-area tab opened from a HistoryView row: one version compared against the file's current content, GitHub-style
@@ -26,7 +26,7 @@ export class HistoryDiffView extends ItemView {
 
   constructor(
     leaf: WorkspaceLeaf,
-    private readonly plugin: WebSyncPlugin,
+    private readonly plugin: SyncstonePlugin,
   ) {
     super(leaf);
   }
@@ -173,7 +173,7 @@ export class HistoryDiffView extends ItemView {
   private render(): void {
     const el = this.contentEl;
     el.empty();
-    el.addClass("websync-revdiff");
+    el.addClass("syncstone-revdiff");
     this.revokeUrl();
 
     const fileId = this.fileId;
@@ -181,15 +181,15 @@ export class HistoryDiffView extends ItemView {
     const entry = index >= 0 ? this.entries[index] : undefined;
 
     if (this.loading && !entry) {
-      el.createDiv({ cls: "websync-revdiff-empty", text: t("p.loading") });
+      el.createDiv({ cls: "syncstone-revdiff-empty", text: t("p.loading") });
       return;
     }
     if (this.error) {
-      el.createDiv({ cls: "websync-revdiff-empty mod-error", text: this.error });
+      el.createDiv({ cls: "syncstone-revdiff-empty mod-error", text: this.error });
       return;
     }
     if (!fileId || !entry) {
-      el.createDiv({ cls: "websync-revdiff-empty", text: t("p.versionNotFound") });
+      el.createDiv({ cls: "syncstone-revdiff-empty", text: t("p.versionNotFound") });
       return;
     }
 
@@ -197,16 +197,16 @@ export class HistoryDiffView extends ItemView {
     const isLiveFile = live instanceof TFile;
     const isCurrent = isLiveFile && index === 0;
 
-    const header = el.createDiv({ cls: "websync-revdiff-header" });
-    const meta = header.createDiv({ cls: "websync-revdiff-meta" });
+    const header = el.createDiv({ cls: "syncstone-revdiff-header" });
+    const meta = header.createDiv({ cls: "syncstone-revdiff-meta" });
     const title = entry.path ?? t("history.unreadablePath");
-    meta.createDiv({ cls: "websync-revdiff-title", text: baseName(title), attr: { title } });
+    meta.createDiv({ cls: "syncstone-revdiff-title", text: baseName(title), attr: { title } });
     meta.createDiv({
-      cls: "websync-history-note",
+      cls: "syncstone-history-note",
       text: t("p.diff.meta", { action: actionLabel(entry), date: new Date(entry.createdAt).toLocaleString(currentLocale(), { dateStyle: "long", timeStyle: "short" }), who: whoLabel(entry, true) }),
     });
 
-    const actions = header.createDiv({ cls: "websync-revdiff-actions" });
+    const actions = header.createDiv({ cls: "syncstone-revdiff-actions" });
     const download = actions.createEl("button", { attr: { "aria-label": t("p.saveCopyTip") } });
     setIcon(download.createSpan(), "copy-plus");
     download.createSpan({ text: t("p.saveCopy") });
@@ -235,12 +235,12 @@ export class HistoryDiffView extends ItemView {
       }
     }
 
-    const body = el.createDiv({ cls: "websync-revdiff-body" });
+    const body = el.createDiv({ cls: "syncstone-revdiff-body" });
     void this.fillBody(body, entry, live instanceof TFile ? live : null);
   }
 
   private async fillBody(body: HTMLElement, entry: RevisionEntry, liveFile: TFile | null): Promise<void> {
-    const message = (text: string, cls = "") => body.createDiv({ cls: `websync-revdiff-empty ${cls}`, text });
+    const message = (text: string, cls = "") => body.createDiv({ cls: `syncstone-revdiff-empty ${cls}`, text });
     if (!entry.hasContent) {
       message(t("p.noContent", { days: this.retentionDays }));
       return;
@@ -261,7 +261,7 @@ export class HistoryDiffView extends ItemView {
       if (IMAGE_EXT.has(ext)) {
         const url = URL.createObjectURL(new Blob([data as unknown as BlobPart], { type: ext === "svg" ? "image/svg+xml" : `image/${ext === "jpg" ? "jpeg" : ext}` }));
         this.objectUrl = url;
-        body.createEl("img", { cls: "websync-history-image", attr: { src: url } });
+        body.createEl("img", { cls: "syncstone-history-image", attr: { src: url } });
         return;
       }
       if (!TEXT_EXT.has(ext)) {
@@ -273,10 +273,10 @@ export class HistoryDiffView extends ItemView {
 
       if (currentText === null) {
         body.createDiv({
-          cls: "websync-revdiff-note",
+          cls: "syncstone-revdiff-note",
           text: t("p.fileGone"),
         });
-        body.createEl("pre", { cls: "websync-history-text", text: oldText });
+        body.createEl("pre", { cls: "syncstone-history-text", text: oldText });
         return;
       }
       if (oldText === currentText) {
@@ -288,19 +288,19 @@ export class HistoryDiffView extends ItemView {
         message(t("p.tooManyChanges"));
         return;
       }
-      const pre = body.createEl("pre", { cls: "websync-revdiff-diff" });
+      const pre = body.createEl("pre", { cls: "syncstone-revdiff-diff" });
       for (const line of withContext(numberDiffLines(lines), 3)) {
-        const row = pre.createDiv({ cls: line === null ? "websync-revdiff-line websync-revdiff-gap" : `websync-revdiff-line is-${line.kind}` });
+        const row = pre.createDiv({ cls: line === null ? "syncstone-revdiff-line syncstone-revdiff-gap" : `syncstone-revdiff-line is-${line.kind}` });
         if (line === null) {
-          row.createSpan({ cls: "websync-revdiff-gutter" });
-          row.createSpan({ cls: "websync-revdiff-gutter" });
-          row.createSpan({ cls: "websync-revdiff-code", text: "⋯" });
+          row.createSpan({ cls: "syncstone-revdiff-gutter" });
+          row.createSpan({ cls: "syncstone-revdiff-gutter" });
+          row.createSpan({ cls: "syncstone-revdiff-code", text: "⋯" });
           continue;
         }
-        row.createSpan({ cls: "websync-revdiff-gutter", text: line.oldLine !== null ? String(line.oldLine) : "" });
-        row.createSpan({ cls: "websync-revdiff-gutter", text: line.newLine !== null ? String(line.newLine) : "" });
-        row.createSpan({ cls: "websync-revdiff-sign", text: line.kind === "add" ? "+" : line.kind === "del" ? "−" : "" });
-        row.createSpan({ cls: "websync-revdiff-code", text: line.text || " " });
+        row.createSpan({ cls: "syncstone-revdiff-gutter", text: line.oldLine !== null ? String(line.oldLine) : "" });
+        row.createSpan({ cls: "syncstone-revdiff-gutter", text: line.newLine !== null ? String(line.newLine) : "" });
+        row.createSpan({ cls: "syncstone-revdiff-sign", text: line.kind === "add" ? "+" : line.kind === "del" ? "−" : "" });
+        row.createSpan({ cls: "syncstone-revdiff-code", text: line.text || " " });
       }
     } catch (err) {
       loading.remove();

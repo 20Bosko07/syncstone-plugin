@@ -1,12 +1,12 @@
 import { normalizePath, Notice, Plugin, TFile } from "obsidian";
 import { applyHistoryTexts, t } from "./i18n";
 import { REMOTE_POLL_INTERVAL_MS, toBase64, type MeResponse } from "@websync/shared";
-import { DEFAULT_SETTINGS, type WebSyncSettings } from "./types.js";
+import { DEFAULT_SETTINGS, type SyncstoneSettings } from "./types.js";
 import { HOSTED_SERVER_URL, normalizeServerUrl } from "./hosted.js";
 import { AuthClient } from "./sync/AuthClient.js";
 import { RemoteApiClient } from "./sync/RemoteApiClient.js";
 import type { BillingInfo } from "./sync/billing.js";
-import { WebSyncApiError } from "./sync/httpClient.js";
+import { SyncstoneApiError } from "./sync/httpClient.js";
 import { CryptoService } from "./sync/CryptoService.js";
 import { VaultLinkManager } from "./sync/VaultLinkManager.js";
 import { FileSystemAdapter } from "./sync/FileSystemAdapter.js";
@@ -17,9 +17,9 @@ import { SyncLog } from "./sync/SyncLog.js";
 import { LiveSyncClient } from "./sync/LiveSyncClient.js";
 import { CollabManager } from "./collab/CollabManager.js";
 import { collabCompartment } from "./collab/editorBinding.js";
-import { WebSyncSettingsTab } from "./settings/SettingsTab.js";
-import { WebSyncStatusBar } from "./ui/StatusBar.js";
-import { WebSyncHeaderActions } from "./ui/HeaderActions.js";
+import { SyncstoneSettingsTab } from "./settings/SettingsTab.js";
+import { SyncstoneStatusBar } from "./ui/StatusBar.js";
+import { SyncstoneHeaderActions } from "./ui/HeaderActions.js";
 import { ExplorerProgressRings, createTransferTracker } from "./ui/TransferProgress.js";
 import { HISTORY_VIEW_TYPE, HistoryView } from "./ui/HistoryView.js";
 import { PublishService } from "./publish/PublishService.js";
@@ -28,8 +28,8 @@ import { SyncLogModal } from "./ui/SyncLogModal.js";
 import { BackupNoticeModal } from "./ui/BackupNoticeModal.js";
 import { HISTORY_DIFF_VIEW_TYPE, HistoryDiffView } from "./ui/HistoryDiffView.js";
 
-export default class WebSyncPlugin extends Plugin {
-  settings: WebSyncSettings = DEFAULT_SETTINGS;
+export default class SyncstonePlugin extends Plugin {
+  settings: SyncstoneSettings = DEFAULT_SETTINGS;
 
   authClient!: AuthClient;
   remoteApi!: RemoteApiClient;
@@ -58,9 +58,9 @@ export default class WebSyncPlugin extends Plugin {
   /** Uploads/downloads in flight (explorer progress rings, "syncing" status). */
   readonly transfers = createTransferTracker();
 
-  private settingsTab: WebSyncSettingsTab | null = null;
-  private statusBar!: WebSyncStatusBar;
-  private headerActions!: WebSyncHeaderActions;
+  private settingsTab: SyncstoneSettingsTab | null = null;
+  private statusBar!: SyncstoneStatusBar;
+  private headerActions!: SyncstoneHeaderActions;
   /** What the sync did (the "Sync log" dialog); lives as long as the plugin, across unlink / relink. */
   syncLog!: SyncLog;
   private progressRings!: ExplorerProgressRings;
@@ -80,22 +80,24 @@ export default class WebSyncPlugin extends Plugin {
     this.syncLog = new SyncLog(this.app, `${this.manifest.dir ?? `${this.app.vault.configDir}/plugins/${this.manifest.id}`}/sync-log.json`);
     void this.syncLog.load();
 
-    this.settingsTab = new WebSyncSettingsTab(this.app, this);
+    this.settingsTab = new SyncstoneSettingsTab(this.app, this);
     this.addSettingTab(this.settingsTab);
-    // The web page opens obsidian://websync-pair once the sign-in is confirmed there: that brings Obsidian to the front
+    // The web page opens obsidian://syncstone-pair once the sign-in is confirmed there: that brings Obsidian to the front
     // and the plugin asks the server at once instead of waiting for the next poll tick.
+    this.registerObsidianProtocolHandler("syncstone-pair", () => this.settingsTab?.pollPairingNow());
+    // The old link name, still opened by web pages that have not been updated yet.
     this.registerObsidianProtocolHandler("websync-pair", () => this.settingsTab?.pollPairingNow());
 
     // Every markdown editor gets an (empty) slot the CollabManager fills with
     // the Yjs binding while a note is co-edited. Must be registered up front.
     this.registerEditorExtension(collabCompartment.of([]));
 
-    this.statusBar = new WebSyncStatusBar(this);
+    this.statusBar = new SyncstoneStatusBar(this);
     this.statusBar.start();
 
     // Note header (top right, next to the reading-view toggle): the sync status
     // icon (with its menu) and the live avatars, on every platform.
-    this.headerActions = new WebSyncHeaderActions(this, this.statusBar);
+    this.headerActions = new SyncstoneHeaderActions(this, this.statusBar);
     this.statusBar.onRefresh = () => this.headerActions.refresh();
     this.app.workspace.onLayoutReady(() => this.headerActions.start());
     this.progressRings = new ExplorerProgressRings(this.app, this.transfers, () => this.openSyncLog());
@@ -247,7 +249,7 @@ export default class WebSyncPlugin extends Plugin {
       this.billing = await this.remoteApi.getBilling();
     } catch (err) {
       // 4xx = this server has no plans (self-hosted); anything else (offline, busy) keeps the last answer.
-      if (err instanceof WebSyncApiError && err.status >= 400 && err.status < 500) this.billing = null;
+      if (err instanceof SyncstoneApiError && err.status >= 400 && err.status < 500) this.billing = null;
     }
     return JSON.stringify(this.billing) !== before;
   }
@@ -282,7 +284,7 @@ export default class WebSyncPlugin extends Plugin {
   }
 
   async loadSettings(): Promise<void> {
-    const stored = ((await this.loadData()) ?? {}) as Partial<WebSyncSettings>;
+    const stored = ((await this.loadData()) ?? {}) as Partial<SyncstoneSettings>;
     this.settings = Object.assign({}, DEFAULT_SETTINGS, stored);
     // Installs from before the hosted service had its own address: an address that is not the hosted one is a
     // self-hosted server and stays in use.

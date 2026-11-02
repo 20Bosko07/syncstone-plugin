@@ -2,7 +2,7 @@ import { Modal, Notice, Setting, type App, type TFile } from "obsidian";
 import type { PublishedNote, PublishOptions } from "@websync/shared";
 import { t, tn, currentLocale } from "../i18n/index.js";
 import type { PublishService } from "../publish/PublishService.js";
-import { WebSyncApiError } from "../sync/httpClient.js";
+import { SyncstoneApiError } from "../sync/httpClient.js";
 
 type Expiry = "keep" | "never" | "1h" | "1d" | "7d" | "30d" | "custom";
 
@@ -47,7 +47,7 @@ export class PublishModal extends Modal {
   }
 
   onOpen(): void {
-    this.modalEl.addClass("websync-publish");
+    this.modalEl.addClass("syncstone-publish");
     this.titleEl.setText(t("p.pub.dialog.title", { name: this.file.basename }));
     this.render();
     void this.load();
@@ -150,7 +150,7 @@ export class PublishModal extends Modal {
 
     if (publication && this.link) {
       const link = this.link;
-      const row = contentEl.createDiv({ cls: "websync-publish-link" });
+      const row = contentEl.createDiv({ cls: "syncstone-publish-link" });
       const input = row.createEl("input", { type: "text", attr: { readonly: "true", "aria-label": t("p.pub.link") } });
       input.value = link;
       input.addEventListener("focus", () => input.select());
@@ -158,17 +158,17 @@ export class PublishModal extends Modal {
       copy.addEventListener("click", () => void this.copy(link, t("p.pub.copied")));
 
       const expired = publication.expiresAt ? new Date(publication.expiresAt).getTime() <= Date.now() : false;
-      const chips = contentEl.createDiv({ cls: "websync-publish-chips" });
+      const chips = contentEl.createDiv({ cls: "syncstone-publish-chips" });
       chips.createSpan({
-        cls: expired ? "websync-publish-chip is-warn" : "websync-publish-chip",
+        cls: expired ? "syncstone-publish-chip is-warn" : "syncstone-publish-chip",
         text: expired
           ? t("p.pub.expiredOn", { date: formatDate(publication.expiresAt!) })
           : publication.expiresAt
             ? t("p.pub.expiresOn", { date: formatDate(publication.expiresAt) })
             : t("p.pub.neverExpires"),
       });
-      if (publication.hasPassword) chips.createSpan({ cls: "websync-publish-chip", text: t("p.pub.passwordSet") });
-      chips.createSpan({ cls: "websync-publish-chip", text: tn("p.pub.views", publication.views) });
+      if (publication.hasPassword) chips.createSpan({ cls: "syncstone-publish-chip", text: t("p.pub.passwordSet") });
+      chips.createSpan({ cls: "syncstone-publish-chip", text: tn("p.pub.views", publication.views) });
     }
 
     new Setting(contentEl)
@@ -197,7 +197,7 @@ export class PublishModal extends Modal {
           this.refreshButtons();
         });
       });
-      if (this.customInvalid()) contentEl.createEl("p", { cls: "websync-error-text", text: t("p.pub.pastDate") });
+      if (this.customInvalid()) contentEl.createEl("p", { cls: "syncstone-error-text", text: t("p.pub.pastDate") });
     }
 
     new Setting(contentEl)
@@ -226,14 +226,14 @@ export class PublishModal extends Modal {
       );
     }
 
-    if (this.error) contentEl.createEl("p", { cls: "websync-error-text", text: this.error });
+    if (this.error) contentEl.createEl("p", { cls: "syncstone-error-text", text: this.error });
 
     const actions = new Setting(contentEl);
-    actions.settingEl.addClass("websync-publish-actions");
+    actions.settingEl.addClass("syncstone-publish-actions");
     if (publication) {
       actions.addButton((button) => {
         button.setButtonText(t("p.pub.stop")).setWarning().setDisabled(this.busy).onClick(() => void this.stop());
-        button.buttonEl.addClass("websync-publish-stop"); // pushed to the left edge, the others stay on the right
+        button.buttonEl.addClass("syncstone-publish-stop"); // pushed to the left edge, the others stay on the right
       });
     }
     if (publication) {
@@ -264,7 +264,7 @@ export class PublishModal extends Modal {
 }
 
 function describe(err: unknown): string {
-  if (err instanceof WebSyncApiError) return err.message;
+  if (err instanceof SyncstoneApiError) return err.message;
   if (err instanceof Error) return err.message;
   return String(err);
 }

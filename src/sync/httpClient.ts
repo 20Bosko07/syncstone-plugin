@@ -27,7 +27,7 @@ export class TransferCancelled extends Error {
   }
 }
 
-export class WebSyncApiError extends Error {
+export class SyncstoneApiError extends Error {
   constructor(
     message: string,
     public readonly status: number,
@@ -36,7 +36,7 @@ export class WebSyncApiError extends Error {
     public readonly request?: string,
   ) {
     super(message);
-    this.name = "WebSyncApiError";
+    this.name = "SyncstoneApiError";
   }
 }
 
@@ -75,7 +75,7 @@ function trimTrailingSlash(url: string): string {
 function randomBoundary(): string {
   const bytes = crypto.getRandomValues(new Uint8Array(16));
   const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
-  return `----WebSyncBoundary${hex}`;
+  return `----SyncstoneBoundary${hex}`;
 }
 
 function toArrayBuffer(bytes: Uint8Array): ArrayBuffer {
@@ -117,7 +117,7 @@ interface RawResponse {
 }
 
 async function doRequest(serverUrl: string, options: RequestOptions): Promise<RawResponse> {
-  if (!serverUrl) throw new WebSyncApiError("Syncstone: Server-URL ist nicht konfiguriert.", 0);
+  if (!serverUrl) throw new SyncstoneApiError("Syncstone: Server-URL ist nicht konfiguriert.", 0);
   const url = `${trimTrailingSlash(serverUrl)}${options.path}`;
   const headers: Record<string, string> = { "Accept-Language": currentLocale(), ...options.headers };
   if (options.token) headers["Authorization"] = `Bearer ${options.token}`;
@@ -147,7 +147,7 @@ async function doRequest(serverUrl: string, options: RequestOptions): Promise<Ra
     });
     return { status: response.status, arrayBuffer: response.arrayBuffer, text: response.text };
   } catch (err) {
-    throw new WebSyncApiError(t("p.http.network", { url, error: (err as Error).message }), 0, undefined, describeRequest(options));
+    throw new SyncstoneApiError(t("p.http.network", { url, error: (err as Error).message }), 0, undefined, describeRequest(options));
   }
 }
 
@@ -168,7 +168,7 @@ function throwIfNotOk(response: RawResponse, options: RequestOptions): void {
     (errorBody as { message?: string; error?: string } | undefined)?.message ??
     (errorBody as { message?: string; error?: string } | undefined)?.error ??
     t("p.http.status", { path, status: response.status });
-  throw new WebSyncApiError(message, response.status, errorBody, describeRequest(options));
+  throw new SyncstoneApiError(message, response.status, errorBody, describeRequest(options));
 }
 
 /** Performs a request and parses a JSON response (or returns undefined for empty/non-JSON responses). */

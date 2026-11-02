@@ -74,7 +74,7 @@ export interface ConfigSyncSettings {
   lastSyncedGlobalVersion: number;
 }
 
-export interface WebSyncSettings {
+export interface SyncstoneSettings {
   /** Self-hosting: use `serverUrl` instead of the hosted service (see hosted.ts). */
   selfHosted: boolean;
   /** Address of the API server of the user's own installation; only used while `selfHosted` is on. */
@@ -117,7 +117,7 @@ export interface WebSyncSettings {
   configSync: ConfigSyncSettings;
 }
 
-export const DEFAULT_SETTINGS: WebSyncSettings = {
+export const DEFAULT_SETTINGS: SyncstoneSettings = {
   selfHosted: false,
   serverUrl: "",
   sessionToken: null,

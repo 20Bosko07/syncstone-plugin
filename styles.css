@@ -1,24 +1,24 @@
 /* Syncstone plugin settings tab styles. Loaded automatically by Obsidian from
    styles.css next to main.js - no bundler step needed for this file. */
 
-.websync-error-text {
+.syncstone-error-text {
   color: var(--text-error);
   margin: 0.25em 0 0.75em 0;
 }
 
-.websync-warning-text {
+.syncstone-warning-text {
   color: var(--text-warning);
   font-weight: 600;
   margin-bottom: 0.75em;
 }
 
-.websync-passphrase-form {
+.syncstone-passphrase-form {
   border-left: 2px solid var(--background-modifier-border);
   padding-left: 1em;
   margin: 0.5em 0 1em 0;
 }
 
-.websync-pairing-code {
+.syncstone-pairing-code {
   font-family: var(--font-monospace);
   font-size: 1.8em;
   font-weight: var(--font-semibold);
@@ -31,16 +31,16 @@
   user-select: all;
 }
 
-.websync-pairing-link {
+.syncstone-pairing-link {
   font-size: 0.9em;
   word-break: break-all;
 }
 
-.websync-status-icon-spin svg {
-  animation: websync-spin 1.2s linear infinite;
+.syncstone-status-icon-spin svg {
+  animation: syncstone-spin 1.2s linear infinite;
 }
 
-@keyframes websync-spin {
+@keyframes syncstone-spin {
   from {
     transform: rotate(0deg);
   }
@@ -51,9 +51,9 @@
 
 /* ---- Note header action: sync status (mobile) + live avatars -------------- */
 
-.websync-header-action,
-.view-actions .websync-header-action,
-.is-mobile .view-actions .websync-header-action {
+.syncstone-header-action,
+.view-actions .syncstone-header-action,
+.is-mobile .view-actions .syncstone-header-action {
   display: inline-flex;
   flex: 0 0 auto;
   align-items: center;
@@ -67,21 +67,21 @@
   padding-inline: 6px;
 }
 
-.websync-header-action > * {
+.syncstone-header-action > * {
   flex: none;
 }
 
-.websync-header-icon {
+.syncstone-header-icon {
   display: inline-flex;
   align-items: center;
 }
 
 /* Storage full / account read-only: the sync icon turns into a red exclamation mark. */
-.websync-status-icon-alert {
+.syncstone-status-icon-alert {
   color: var(--text-error);
 }
 
-.websync-storage-bar {
+.syncstone-storage-bar {
   height: 4px;
   margin-top: 8px;
   overflow: hidden;
@@ -89,31 +89,31 @@
   background: var(--background-modifier-border);
 }
 
-.websync-storage-fill {
+.syncstone-storage-fill {
   height: 100%;
   background: var(--interactive-accent);
 }
 
-.websync-storage-fill.is-nearly {
+.syncstone-storage-fill.is-nearly {
   background: var(--text-warning, #d98a00);
 }
 
-.websync-storage-fill.is-full {
+.syncstone-storage-fill.is-full {
   background: var(--text-error);
 }
 
-.websync-storage-warning {
+.syncstone-storage-warning {
   margin-top: 4px;
   color: var(--text-error);
 }
 
-.websync-avatars {
+.syncstone-avatars {
   display: inline-flex;
   align-items: center;
 }
 
 /* Overlapping coloured circles with the device name's initial - same colour as that device's cursor. */
-.websync-avatar {
+.syncstone-avatar {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -130,11 +130,11 @@
   line-height: 1;
 }
 
-.websync-avatar:first-child {
+.syncstone-avatar:first-child {
   margin-left: 0;
 }
 
-.websync-avatar-more {
+.syncstone-avatar-more {
   background-color: var(--background-modifier-border);
   color: var(--text-muted);
   font-size: 9px;
@@ -163,7 +163,7 @@
    collapsible groups (Advanced) are added. */
 
 /* Top of the tab: one status line with the signed-in address on the right. */
-.websync-status {
+.syncstone-status {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -173,11 +173,11 @@
   background: var(--background-secondary);
 }
 
-.websync-status-text {
+.syncstone-status-text {
   font-weight: var(--font-medium);
 }
 
-.websync-status-account {
+.syncstone-status-account {
   margin-left: auto;
   color: var(--text-muted);
   font-size: var(--font-ui-small);
@@ -186,37 +186,37 @@
   white-space: nowrap;
 }
 
-.websync-status-icon {
+.syncstone-status-icon {
   display: flex;
   flex: none;
   color: var(--text-muted);
 }
 
-.websync-status-icon svg {
+.syncstone-status-icon svg {
   width: 16px;
   height: 16px;
 }
 
-.websync-status-icon.is-ok {
+.syncstone-status-icon.is-ok {
   color: var(--color-green, #3fb950);
 }
 
-.websync-status-icon.is-warn {
+.syncstone-status-icon.is-warn {
   color: var(--color-orange, #d98a00);
 }
 
 /* A group of rows under a heading. */
-.websync-group {
+.syncstone-group {
   margin-bottom: 6px;
 }
 
 /* A collapsible group looks like a heading with a chevron. */
-.websync-section {
+.syncstone-section {
   margin-top: 18px;
   border-top: 1px solid var(--background-modifier-border);
 }
 
-.websync-section-title {
+.syncstone-section-title {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -227,12 +227,12 @@
   list-style: none;
 }
 
-.websync-section-title::-webkit-details-marker {
+.syncstone-section-title::-webkit-details-marker {
   display: none;
 }
 
 /* Chevron that turns when the group is open. */
-.websync-section-title::before {
+.syncstone-section-title::before {
   content: "";
   flex: none;
   width: 0.4em;
@@ -243,11 +243,11 @@
   transition: transform 0.15s ease;
 }
 
-details[open] > .websync-section-title::before {
+details[open] > .syncstone-section-title::before {
   transform: rotate(45deg);
 }
 
-.websync-section-summary {
+.syncstone-section-summary {
   margin-left: auto;
   color: var(--text-muted);
   font-size: var(--font-ui-small);
@@ -255,45 +255,45 @@ details[open] > .websync-section-title::before {
 }
 
 /* A dropdown inside a group (what to sync). */
-.websync-dropdown {
+.syncstone-dropdown {
   margin: 4px 0 8px 4px;
   padding-left: 12px;
   border-left: 2px solid var(--background-modifier-border);
 }
 
-.websync-dropdown > .websync-section-title {
+.syncstone-dropdown > .syncstone-section-title {
   padding: 8px 0;
   font-size: var(--font-ui-small);
   font-weight: var(--font-medium);
 }
 
 /* Progress ring next to a file in the explorer while it uploads/downloads (only for transfers longer than ~2 s). */
-.websync-progress-ring {
+.syncstone-progress-ring {
   flex: none;
   margin: 0 4px;
   transform: rotate(-90deg);
 }
-.websync-progress-ring circle {
+.syncstone-progress-ring circle {
   fill: none;
   stroke-width: 2.5;
 }
-.websync-progress-ring .websync-progress-track {
+.syncstone-progress-ring .syncstone-progress-track {
   stroke: var(--background-modifier-border);
 }
-.websync-progress-ring .websync-progress-bar {
+.syncstone-progress-ring .syncstone-progress-bar {
   stroke: var(--interactive-accent);
   stroke-linecap: round;
   transition: stroke-dasharray 0.2s linear;
 }
 /* A file that could not be synced: red circle with an exclamation mark (tap = the sync log). */
-.websync-progress-ring.is-failed {
+.syncstone-progress-ring.is-failed {
   transform: none;
   cursor: pointer;
 }
-.websync-progress-ring .websync-fail-circle {
+.syncstone-progress-ring .syncstone-fail-circle {
   stroke: var(--text-error);
 }
-.websync-progress-ring .websync-fail-mark {
+.syncstone-progress-ring .syncstone-fail-mark {
   fill: none;
   stroke: var(--text-error);
   stroke-width: 2;
@@ -301,20 +301,20 @@ details[open] > .websync-section-title::before {
 }
 
 /* ---- Version history view (sidebar) ---- */
-.websync-history {
+.syncstone-history {
   display: flex;
   flex-direction: column;
   gap: 6px;
   padding: 8px !important;
 }
-.websync-history-toggle {
+.syncstone-history-toggle {
   display: flex;
   border: 1px solid var(--background-modifier-border);
   border-radius: var(--radius-s);
   overflow: hidden;
   flex: none;
 }
-.websync-history-toggle button {
+.syncstone-history-toggle button {
   flex: 1;
   border: none;
   border-radius: 0;
@@ -324,33 +324,33 @@ details[open] > .websync-section-title::before {
   padding: 4px 10px;
   height: auto;
 }
-.websync-history-toggle button.is-active {
+.syncstone-history-toggle button.is-active {
   background: var(--background-modifier-active-hover);
   color: var(--text-normal);
 }
-.websync-history-title {
+.syncstone-history-title {
   display: flex;
   align-items: center;
   gap: 4px;
   font-weight: var(--font-semibold);
 }
-.websync-history-name {
+.syncstone-history-name {
   flex: 1;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.websync-history-faint {
+.syncstone-history-faint {
   font-weight: normal;
   color: var(--text-faint);
 }
-.websync-history-list {
+.syncstone-history-list {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
 }
-.websync-history-day {
+.syncstone-history-day {
   position: sticky;
   top: 0;
   z-index: 1;
@@ -360,7 +360,7 @@ details[open] > .websync-section-title::before {
   color: var(--text-muted);
   background: var(--background-secondary);
 }
-.websync-history-item {
+.syncstone-history-item {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -368,50 +368,50 @@ details[open] > .websync-section-title::before {
   border-radius: var(--radius-s);
   cursor: pointer;
 }
-.websync-history-item:hover {
+.syncstone-history-item:hover {
   background: var(--background-modifier-hover);
 }
-.websync-history-item.is-selected {
+.syncstone-history-item.is-selected {
   background: var(--background-modifier-active-hover);
 }
-.websync-history-icon {
+.syncstone-history-icon {
   display: flex;
   flex: none;
   color: var(--text-muted);
 }
-.websync-history-icon svg {
+.syncstone-history-icon svg {
   width: 16px;
   height: 16px;
 }
-.websync-history-icon.is-create,
-.websync-history-icon.is-restore {
+.syncstone-history-icon.is-create,
+.syncstone-history-icon.is-restore {
   color: var(--color-green);
 }
-.websync-history-icon.is-delete {
+.syncstone-history-icon.is-delete {
   color: var(--color-red);
 }
-.websync-history-body {
+.syncstone-history-body {
   flex: 1;
   min-width: 0;
 }
-.websync-history-line {
+.syncstone-history-line {
   font-size: var(--font-ui-small);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.websync-history-line.is-deleted {
+.syncstone-history-line.is-deleted {
   text-decoration: line-through;
   color: var(--text-muted);
 }
-.websync-history-note {
+.syncstone-history-note {
   font-size: var(--font-ui-smaller);
   color: var(--text-faint);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.websync-history-badge {
+.syncstone-history-badge {
   margin-left: 6px;
   padding: 0 6px;
   border-radius: 8px;
@@ -419,7 +419,7 @@ details[open] > .websync-section-title::before {
   color: var(--text-on-accent);
   background: var(--interactive-accent);
 }
-.websync-history-text {
+.syncstone-history-text {
   margin: 0;
   padding: 6px 8px;
   font-family: var(--font-monospace);
@@ -428,47 +428,47 @@ details[open] > .websync-section-title::before {
   white-space: pre-wrap;
   word-break: break-word;
 }
-.websync-history-image {
+.syncstone-history-image {
   display: block;
   max-width: 100%;
   margin: 8px auto;
 }
-.websync-history-empty {
+.syncstone-history-empty {
   padding: 10px 6px;
   color: var(--text-faint);
   font-size: var(--font-ui-small);
 }
-.websync-history-empty.mod-error {
+.syncstone-history-empty.mod-error {
   color: var(--text-error);
 }
-.websync-history-more {
+.syncstone-history-more {
   align-self: center;
 }
-.websync-history-footer {
+.syncstone-history-footer {
   font-size: var(--font-ui-smaller);
   color: var(--text-faint);
 }
-.websync-history-filters {
+.syncstone-history-filters {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
-.websync-history-filters input[type="search"] {
+.syncstone-history-filters input[type="search"] {
   width: 100%;
 }
-.websync-history-check {
+.syncstone-history-check {
   font-size: var(--font-ui-smaller);
   color: var(--text-muted);
 }
 
 /* ---- Version diff view (main-area tab, compares a picked version against the current content) ---- */
-.websync-revdiff {
+.syncstone-revdiff {
   padding: 0 !important;
   display: flex;
   flex-direction: column;
   height: 100%;
 }
-.websync-revdiff-header {
+.syncstone-revdiff-header {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
@@ -478,64 +478,64 @@ details[open] > .websync-section-title::before {
   border-bottom: 1px solid var(--background-modifier-border);
   flex: none;
 }
-.websync-revdiff-meta {
+.syncstone-revdiff-meta {
   min-width: 0;
 }
-.websync-revdiff-title {
+.syncstone-revdiff-title {
   font-weight: var(--font-semibold);
   font-size: var(--font-ui-medium);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.websync-revdiff-actions {
+.syncstone-revdiff-actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 6px;
 }
-.websync-revdiff-actions button {
+.syncstone-revdiff-actions button {
   display: inline-flex;
   align-items: center;
   gap: 2px;
   font-size: var(--font-ui-smaller);
 }
-.websync-revdiff-body {
+.syncstone-revdiff-body {
   flex: 1;
   min-height: 0;
   overflow: auto;
   padding: 8px 16px 24px;
 }
-.websync-revdiff-note {
+.syncstone-revdiff-note {
   padding: 8px 0 0;
   color: var(--text-muted);
   font-size: var(--font-ui-small);
 }
-.websync-revdiff-empty {
+.syncstone-revdiff-empty {
   padding: 24px 16px;
   color: var(--text-faint);
 }
-.websync-revdiff-empty.mod-error {
+.syncstone-revdiff-empty.mod-error {
   color: var(--text-error);
 }
-.websync-revdiff-diff {
+.syncstone-revdiff-diff {
   margin: 8px 0 0;
   font-family: var(--font-monospace);
   font-size: 12.5px;
   line-height: 1.55;
 }
-.websync-revdiff-line {
+.syncstone-revdiff-line {
   display: flex;
   white-space: pre-wrap;
   word-break: break-word;
 }
-.websync-revdiff-line.is-add {
+.syncstone-revdiff-line.is-add {
   background: rgba(var(--color-green-rgb), 0.15);
 }
-.websync-revdiff-line.is-del {
+.syncstone-revdiff-line.is-del {
   background: rgba(var(--color-red-rgb), 0.15);
 }
-.websync-revdiff-gutter {
+.syncstone-revdiff-gutter {
   flex: none;
   width: 42px;
   padding-right: 8px;
@@ -543,51 +543,51 @@ details[open] > .websync-section-title::before {
   color: var(--text-faint);
   user-select: none;
 }
-.websync-revdiff-sign {
+.syncstone-revdiff-sign {
   flex: none;
   width: 14px;
   text-align: center;
   user-select: none;
   color: var(--text-faint);
 }
-.websync-revdiff-line.is-add .websync-revdiff-sign {
+.syncstone-revdiff-line.is-add .syncstone-revdiff-sign {
   color: var(--color-green);
 }
-.websync-revdiff-line.is-del .websync-revdiff-sign {
+.syncstone-revdiff-line.is-del .syncstone-revdiff-sign {
   color: var(--color-red);
 }
-.websync-revdiff-code {
+.syncstone-revdiff-code {
   flex: 1;
   min-width: 0;
 }
-.websync-revdiff-gap .websync-revdiff-code {
+.syncstone-revdiff-gap .syncstone-revdiff-code {
   color: var(--text-faint);
   user-select: none;
 }
 
 /* ---- Share as link dialog ----------------------------------------------- */
 
-.websync-publish-link {
+.syncstone-publish-link {
   display: flex;
   gap: 8px;
   margin: 0.5em 0;
 }
 
-.websync-publish-link input {
+.syncstone-publish-link input {
   flex: 1;
   min-width: 0;
   font-family: var(--font-monospace);
   font-size: var(--font-ui-small);
 }
 
-.websync-publish-chips {
+.syncstone-publish-chips {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
   margin-bottom: 0.75em;
 }
 
-.websync-publish-chip {
+.syncstone-publish-chip {
   padding: 2px 10px;
   border-radius: 999px;
   background: var(--background-secondary);
@@ -595,39 +595,39 @@ details[open] > .websync-section-title::before {
   font-size: var(--font-ui-smaller);
 }
 
-.websync-publish-chip.is-warn {
+.syncstone-publish-chip.is-warn {
   background: color-mix(in srgb, var(--text-error) 15%, transparent);
   color: var(--text-error);
 }
 
-.websync-publish-actions {
+.syncstone-publish-actions {
   border-top: none;
 }
 
-.websync-publish-actions .setting-item-control {
+.syncstone-publish-actions .setting-item-control {
   flex: 1;
   justify-content: flex-end;
   gap: 8px;
 }
 
-.websync-publish-actions .websync-publish-stop {
+.syncstone-publish-actions .syncstone-publish-stop {
   margin-right: auto;
 }
 
 /* ---- Sync log dialog ------------------------------------------------------- */
 
-.websync-log {
+.syncstone-log {
   width: min(560px, 96vw);
 }
 
-.websync-log-bar {
+.syncstone-log-bar {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-bottom: 8px;
 }
 
-.websync-log-filter {
+.syncstone-log-filter {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -636,18 +636,18 @@ details[open] > .websync-section-title::before {
   font-size: var(--font-ui-small);
 }
 
-.websync-log-list {
+.syncstone-log-list {
   max-height: 60vh;
   overflow-y: auto;
 }
 
-.websync-log-empty {
+.syncstone-log-empty {
   padding: 24px 0;
   text-align: center;
   color: var(--text-muted);
 }
 
-.websync-log-day {
+.syncstone-log-day {
   position: sticky;
   top: 0;
   padding: 6px 0 4px;
@@ -659,7 +659,7 @@ details[open] > .websync-section-title::before {
   letter-spacing: 0.04em;
 }
 
-.websync-log-row {
+.syncstone-log-row {
   display: flex;
   align-items: flex-start;
   gap: 10px;
@@ -667,34 +667,34 @@ details[open] > .websync-section-title::before {
   border-bottom: 1px solid var(--background-modifier-border);
 }
 
-.websync-log-icon {
+.syncstone-log-icon {
   display: inline-flex;
   flex: none;
   margin-top: 2px;
   color: var(--text-muted);
 }
 
-.websync-log-icon .svg-icon {
+.syncstone-log-icon .svg-icon {
   width: 16px;
   height: 16px;
 }
 
-.websync-log-row.is-problem .websync-log-icon,
-.websync-log-row.is-problem .websync-log-text {
+.syncstone-log-row.is-problem .syncstone-log-icon,
+.syncstone-log-row.is-problem .syncstone-log-text {
   color: var(--text-error);
 }
 
-.websync-log-body {
+.syncstone-log-body {
   flex: 1;
   min-width: 0;
 }
 
-.websync-log-text {
+.syncstone-log-text {
   font-size: var(--font-ui-small);
 }
 
-.websync-log-path,
-.websync-log-detail {
+.syncstone-log-path,
+.syncstone-log-detail {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -702,20 +702,20 @@ details[open] > .websync-section-title::before {
   font-size: var(--font-ui-smaller);
 }
 
-.websync-log-detail {
+.syncstone-log-detail {
   white-space: normal;
 }
 
-.websync-log-path.is-link {
+.syncstone-log-path.is-link {
   cursor: pointer;
 }
 
-.websync-log-path.is-link:hover {
+.syncstone-log-path.is-link:hover {
   color: var(--text-accent);
   text-decoration: underline;
 }
 
-.websync-log-time {
+.syncstone-log-time {
   flex: none;
   color: var(--text-faint);
   font-size: var(--font-ui-smaller);
