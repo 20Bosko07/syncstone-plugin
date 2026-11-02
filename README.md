@@ -1,13 +1,4 @@
 <p align="center">
-  <a href="https://syncst.one">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="assets/wordmark-dark.png">
-      <img src="assets/wordmark.png" alt="Syncstone" width="320">
-    </picture>
-  </a>
-</p>
-
-<p align="center">
   <strong>Your Obsidian vault on every device. Encrypted, always in sync.</strong>
 </p>
 
