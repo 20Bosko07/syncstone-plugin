@@ -40,11 +40,11 @@ export class SyncLogModal extends Modal {
   }
 
   onOpen(): void {
-    this.modalEl.addClass("websync-log");
+    this.modalEl.addClass("syncstone-log");
     this.titleEl.setText(t("p.log.title"));
 
-    const bar = this.contentEl.createDiv({ cls: "websync-log-bar" });
-    const filter = bar.createEl("label", { cls: "websync-log-filter" });
+    const bar = this.contentEl.createDiv({ cls: "syncstone-log-bar" });
+    const filter = bar.createEl("label", { cls: "syncstone-log-filter" });
     const box = filter.createEl("input", { type: "checkbox" });
     filter.createSpan({ text: t("p.log.onlyProblems") });
     box.addEventListener("change", () => {
@@ -56,7 +56,7 @@ export class SyncLogModal extends Modal {
     const clear = bar.createEl("button", { text: t("p.log.clear") });
     clear.addEventListener("click", () => this.log.clear());
 
-    this.listEl = this.contentEl.createDiv({ cls: "websync-log-list" });
+    this.listEl = this.contentEl.createDiv({ cls: "syncstone-log-list" });
     this.offChange = this.log.onChange(() => this.scheduleRender());
     this.render();
   }
@@ -81,7 +81,7 @@ export class SyncLogModal extends Modal {
     const entries = this.log.list().filter((entry) => !this.onlyProblems || isProblem(entry));
     this.listEl.empty();
     if (entries.length === 0) {
-      this.listEl.createDiv({ cls: "websync-log-empty", text: t(this.onlyProblems ? "p.log.noProblems" : "p.log.empty") });
+      this.listEl.createDiv({ cls: "syncstone-log-empty", text: t(this.onlyProblems ? "p.log.noProblems" : "p.log.empty") });
       return;
     }
     let day = "";
@@ -89,21 +89,21 @@ export class SyncLogModal extends Modal {
       const entryDay = dayLabel(entry.at);
       if (entryDay !== day) {
         day = entryDay;
-        this.listEl.createDiv({ cls: "websync-log-day", text: day });
+        this.listEl.createDiv({ cls: "syncstone-log-day", text: day });
       }
       this.renderRow(entry);
     }
   }
 
   private renderRow(entry: LogEntry): void {
-    const row = this.listEl.createDiv({ cls: "websync-log-row" });
+    const row = this.listEl.createDiv({ cls: "syncstone-log-row" });
     if (isProblem(entry)) row.addClass("is-problem");
-    setIcon(row.createSpan({ cls: "websync-log-icon" }), ICONS[entry.kind]);
-    const body = row.createDiv({ cls: "websync-log-body" });
-    body.createDiv({ cls: "websync-log-text", text: describe(entry) });
+    setIcon(row.createSpan({ cls: "syncstone-log-icon" }), ICONS[entry.kind]);
+    const body = row.createDiv({ cls: "syncstone-log-body" });
+    body.createDiv({ cls: "syncstone-log-text", text: describe(entry) });
     if (entry.path) {
       const file = this.app.vault.getAbstractFileByPath(entry.path);
-      const pathEl = body.createDiv({ cls: "websync-log-path", text: entry.path });
+      const pathEl = body.createDiv({ cls: "syncstone-log-path", text: entry.path });
       if (file instanceof TFile) {
         pathEl.addClass("is-link");
         pathEl.addEventListener("click", () => {
@@ -113,8 +113,8 @@ export class SyncLogModal extends Modal {
       }
     }
     const extra = detail(entry);
-    if (extra) body.createDiv({ cls: "websync-log-detail", text: extra });
-    row.createSpan({ cls: "websync-log-time", text: new Date(entry.at).toLocaleTimeString(currentLocale()) });
+    if (extra) body.createDiv({ cls: "syncstone-log-detail", text: extra });
+    row.createSpan({ cls: "syncstone-log-time", text: new Date(entry.at).toLocaleTimeString(currentLocale()) });
   }
 
   private async copy(): Promise<void> {

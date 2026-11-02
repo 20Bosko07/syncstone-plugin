@@ -16,7 +16,7 @@ import type { TransferTracker } from "../ui/TransferTracker.js";
 import type { LogReason, SyncLog } from "./SyncLog.js";
 import { errorArgs } from "./errorArgs.js";
 import { t } from "../i18n/index.js";
-import { TransferCancelled, WebSyncApiError } from "./httpClient.js";
+import { TransferCancelled, SyncstoneApiError } from "./httpClient.js";
 
 /** Notes up to this size are kept as merge base and can be merged when edited on two devices. */
 const MERGE_MAX_BYTES = 1024 * 1024;
@@ -32,7 +32,7 @@ const CATCH_UP_FRESH_MS = 15_000;
 
 /** Errors that say "nothing will work right now" (offline, signed out, server down) - those still stop the whole run. */
 function isFatal(err: unknown): boolean {
-  if (!(err instanceof WebSyncApiError)) return false;
+  if (!(err instanceof SyncstoneApiError)) return false;
   return err.status === 0 || err.status === 401 || err.status === 403 || err.status >= 502;
 }
 
@@ -1074,7 +1074,7 @@ export class SyncEngine {
    * `code`). Tells the user once and lets the sync carry on. Returns false for every other error.
    */
   private handleRefusedUpload(err: unknown, file: TFile): boolean {
-    if (!(err instanceof WebSyncApiError)) return false;
+    if (!(err instanceof SyncstoneApiError)) return false;
     const body = (err.body ?? {}) as { code?: string; maxFileBytes?: number };
     if (err.status === 402) {
       this.deps.onWriteRefused?.("read-only");

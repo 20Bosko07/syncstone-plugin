@@ -58,7 +58,7 @@ export class AuthClient {
    * returns `approved`, `denied`, or `expired`, a subsequent poll with the
    * same `pollToken` 404s - the caller MUST stop polling as soon as it sees
    * one of those terminal statuses (see SettingsTab.ts's polling loop). A
-   * 404 (thrown here as a WebSyncApiError with status 404) is also terminal
+   * 404 (thrown here as a SyncstoneApiError with status 404) is also terminal
    * and should be treated as a failed/expired attempt.
    */
   async pollDeviceAuth(pollToken: string): Promise<DevicePollResponse> {

@@ -1,5 +1,5 @@
 {
-  "name": "websync-plugin",
+  "name": "syncstone-plugin",
   "version": "0.2.18",
   "private": true,
   "type": "module",

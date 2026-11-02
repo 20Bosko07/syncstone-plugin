@@ -2,10 +2,10 @@ import { showsPlanSection } from "../sync/billing.js";
 import { t } from "../i18n/index.js";
 import { App, Notice, Platform, PluginSettingTab, Setting, setIcon, type TextComponent } from "obsidian";
 import { defaultDeviceName } from "../deviceName.js";
-import type WebSyncPlugin from "../main.js";
+import type SyncstonePlugin from "../main.js";
 import type { LinkedVaultConfig } from "../types.js";
 import { VaultLinkError, type VaultLinkResult } from "../sync/VaultLinkManager.js";
-import { WebSyncApiError } from "../sync/httpClient.js";
+import { SyncstoneApiError } from "../sync/httpClient.js";
 import { formatBytes } from "../ui/historyFormat.js";
 import { HOSTED_SERVER_URL, normalizeServerUrl } from "../hosted.js";
 import { openExternal } from "../openExternal.js";
@@ -14,7 +14,7 @@ type PairingState = "idle" | "starting" | "waiting" | "denied" | "expired" | "er
 
 function describeError(err: unknown): string {
   if (err instanceof VaultLinkError) return err.message;
-  if (err instanceof WebSyncApiError) return err.message;
+  if (err instanceof SyncstoneApiError) return err.message;
   if (err instanceof Error) return err.message;
   return String(err);
 }
@@ -43,7 +43,7 @@ interface PassphraseFormOptions {
  * the DOM - simpler to keep correct for a tab with this much conditional
  * form state.
  */
-export class WebSyncSettingsTab extends PluginSettingTab {
+export class SyncstoneSettingsTab extends PluginSettingTab {
   /**
    * Which collapsible sections are open. Kept on the tab (not re-derived) because
    * every state change re-renders the whole tab via display().
@@ -72,7 +72,7 @@ export class WebSyncSettingsTab extends PluginSettingTab {
 
   constructor(
     app: App,
-    private readonly plugin: WebSyncPlugin,
+    private readonly plugin: SyncstonePlugin,
   ) {
     super(app, plugin);
   }
@@ -80,7 +80,7 @@ export class WebSyncSettingsTab extends PluginSettingTab {
   display(): void {
     const { containerEl } = this;
     containerEl.empty();
-    containerEl.addClass("websync-settings");
+    containerEl.addClass("syncstone-settings");
     this.renderStatus(containerEl);
 
     this.renderAccountSection(containerEl);
@@ -112,10 +112,10 @@ export class WebSyncSettingsTab extends PluginSettingTab {
         text = t("p.hero.connected", { vault: settings.linkedVault.vaultName });
       }
     }
-    const status = parent.createDiv({ cls: "websync-status" });
-    setIcon(status.createSpan({ cls: `websync-status-icon is-${tone}` }), icon);
-    status.createSpan({ cls: "websync-status-text", text });
-    if (settings.accountUsername && settings.sessionToken) status.createSpan({ cls: "websync-status-account", text: settings.accountUsername });
+    const status = parent.createDiv({ cls: "syncstone-status" });
+    setIcon(status.createSpan({ cls: `syncstone-status-icon is-${tone}` }), icon);
+    status.createSpan({ cls: "syncstone-status-text", text });
+    if (settings.accountUsername && settings.sessionToken) status.createSpan({ cls: "syncstone-status-account", text: settings.accountUsername });
   }
 
   /**
@@ -125,22 +125,22 @@ export class WebSyncSettingsTab extends PluginSettingTab {
    */
   private section(parent: HTMLElement, id: string, title: string, options: { nested?: boolean; collapsible?: boolean; summary?: string } = {}): HTMLElement {
     if (!options.nested && !options.collapsible) {
-      const group = parent.createDiv({ cls: "websync-group" });
+      const group = parent.createDiv({ cls: "syncstone-group" });
       new Setting(group).setName(title).setHeading();
       return group;
     }
 
-    const details = parent.createEl("details", { cls: options.nested ? "websync-dropdown" : "websync-section" });
+    const details = parent.createEl("details", { cls: options.nested ? "syncstone-dropdown" : "syncstone-section" });
     details.open = this.openSections.has(id);
     details.addEventListener("toggle", () => {
       if (details.open) this.openSections.add(id);
       else this.openSections.delete(id);
     });
 
-    const summary = details.createEl("summary", { cls: "websync-section-title" });
+    const summary = details.createEl("summary", { cls: "syncstone-section-title" });
     summary.createSpan({ text: title });
-    if (options.summary) summary.createSpan({ cls: "websync-section-summary", text: options.summary });
-    return details.createDiv({ cls: "websync-section-body" });
+    if (options.summary) summary.createSpan({ cls: "syncstone-section-summary", text: options.summary });
+    return details.createDiv({ cls: "syncstone-section-body" });
   }
 
   hide(): void {
@@ -160,7 +160,7 @@ export class WebSyncSettingsTab extends PluginSettingTab {
 
     // The hosted service is the default and needs no address. This build may not know it yet (see hosted.ts).
     if (!this.plugin.settings.selfHosted && !normalizeServerUrl(HOSTED_SERVER_URL) && !this.plugin.settings.sessionToken) {
-      containerEl.createEl("p", { text: t("p.hostedMissing"), cls: "websync-warning-text" });
+      containerEl.createEl("p", { text: t("p.hostedMissing"), cls: "syncstone-warning-text" });
     }
 
     if (this.plugin.settings.sessionToken) {
@@ -219,12 +219,12 @@ export class WebSyncSettingsTab extends PluginSettingTab {
       // than leaving the UI stuck with no active polling.
       if (this.pollToken && this.pollTimer === null) this.startPolling();
 
-      const wrap = containerEl.createDiv({ cls: "websync-pairing" });
+      const wrap = containerEl.createDiv({ cls: "syncstone-pairing" });
       wrap.createEl("p", { text: t("p.confirmCode") });
-      wrap.createDiv({ text: this.pairingCode ?? "", cls: "websync-pairing-code" });
+      wrap.createDiv({ text: this.pairingCode ?? "", cls: "syncstone-pairing-code" });
 
       if (this.verificationUrl) {
-        const linkPara = wrap.createEl("p", { cls: "websync-pairing-link" });
+        const linkPara = wrap.createEl("p", { cls: "syncstone-pairing-link" });
         linkPara.appendText(t("p.browserNotOpening"));
         const link = linkPara.createEl("a", { text: this.verificationUrl, href: this.verificationUrl });
         link.setAttr("target", "_blank");
@@ -238,7 +238,7 @@ export class WebSyncSettingsTab extends PluginSettingTab {
     }
 
     if (this.pairingState === "denied") {
-      containerEl.createEl("p", { text: t("p.denied"), cls: "websync-error-text" });
+      containerEl.createEl("p", { text: t("p.denied"), cls: "syncstone-error-text" });
       new Setting(containerEl).addButton((btn) =>
         btn
           .setButtonText(t("p.retry"))
@@ -259,7 +259,7 @@ export class WebSyncSettingsTab extends PluginSettingTab {
         this.pairingState === "expired"
           ? t("p.expired")
           : (this.pairingError ?? t("p.signInFailed")),
-      cls: "websync-error-text",
+      cls: "syncstone-error-text",
     });
     new Setting(containerEl).addButton((btn) =>
       btn
@@ -353,7 +353,7 @@ export class WebSyncSettingsTab extends PluginSettingTab {
     this.clearPollTimer();
     this.pollTimer = window.setInterval(() => void this.pollOnce(), 1500);
     // While the browser is in front, a phone suspends Obsidian - the timer only ticks again some time after the return.
-    // So ask the moment the app is visible / focused again (and when the confirmation page opens obsidian://websync-pair).
+    // So ask the moment the app is visible / focused again (and when the confirmation page opens obsidian://syncstone-pair).
     this.resumeHandler = () => {
       if (document.visibilityState === "visible") void this.pollOnce();
     };
@@ -361,7 +361,7 @@ export class WebSyncSettingsTab extends PluginSettingTab {
     window.addEventListener("focus", this.resumeHandler);
   }
 
-  /** From the obsidian://websync-pair link: ask the server now. */
+  /** From the obsidian://syncstone-pair link: ask the server now. */
   pollPairingNow(): void {
     if (this.pollToken) void this.pollOnce();
   }
@@ -514,16 +514,16 @@ export class WebSyncSettingsTab extends PluginSettingTab {
       .setDesc(quota ? t("p.storageOf", { used: formatBytes(used), quota: formatBytes(quota), percent }) : t("p.storageNoLimit", { used: formatBytes(used) }));
 
     if (quota) {
-      const bar = setting.descEl.createDiv({ cls: "websync-storage-bar" });
-      const fill = bar.createDiv({ cls: "websync-storage-fill" });
+      const bar = setting.descEl.createDiv({ cls: "syncstone-storage-bar" });
+      const fill = bar.createDiv({ cls: "syncstone-storage-fill" });
       fill.style.width = `${percent}%`;
       if (full) fill.addClass("is-full");
       else if (used >= quota * 0.8) fill.addClass("is-nearly");
     }
-    if (account.readOnly) setting.descEl.createDiv({ cls: "websync-storage-warning", text: t("p.readOnly") });
-    else if (full) setting.descEl.createDiv({ cls: "websync-storage-warning", text: t("p.storageFull") });
+    if (account.readOnly) setting.descEl.createDiv({ cls: "syncstone-storage-warning", text: t("p.readOnly") });
+    else if (full) setting.descEl.createDiv({ cls: "syncstone-storage-warning", text: t("p.storageFull") });
     if (account.billingState === "trial" && account.trialEndsAt) setting.descEl.createDiv({ text: t("p.trialEnds", { date: date(account.trialEndsAt) }) });
-    if (account.dataDeleteAt && account.billingState !== "active") setting.descEl.createDiv({ cls: "websync-storage-warning", text: t("p.deleteOn", { date: date(account.dataDeleteAt) }) });
+    if (account.dataDeleteAt && account.billingState !== "active") setting.descEl.createDiv({ cls: "syncstone-storage-warning", text: t("p.deleteOn", { date: date(account.dataDeleteAt) }) });
 
     if (account.billingState !== "unmanaged" && account.webUrl) {
       const planUrl = `${account.webUrl.replace(/\/+$/, "")}/account/billing`;
@@ -563,12 +563,12 @@ export class WebSyncSettingsTab extends PluginSettingTab {
       .setName(t("p.storage"))
       .setDesc(quota ? t("p.storageOf", { used: formatBytes(used), quota: formatBytes(quota), percent }) : t("p.storageNoLimit", { used: formatBytes(used) }));
     if (quota) {
-      const bar = storage.descEl.createDiv({ cls: "websync-storage-bar" });
-      const fill = bar.createDiv({ cls: "websync-storage-fill" });
+      const bar = storage.descEl.createDiv({ cls: "syncstone-storage-bar" });
+      const fill = bar.createDiv({ cls: "syncstone-storage-fill" });
       fill.style.width = `${percent}%`;
       if (used >= quota) fill.addClass("is-full");
       else if (used >= quota * 0.8) fill.addClass("is-nearly");
-      if (used >= quota && info.state !== "read_only" && info.state !== "expired") storage.descEl.createDiv({ cls: "websync-storage-warning", text: t("p.storageFull") });
+      if (used >= quota && info.state !== "read_only" && info.state !== "expired") storage.descEl.createDiv({ cls: "syncstone-storage-warning", text: t("p.storageFull") });
     }
 
     // State of the subscription, with what happens next.
@@ -580,7 +580,7 @@ export class WebSyncSettingsTab extends PluginSettingTab {
     else if (info.compedPlan) detail = t("p.plan.comped");
     const state = new Setting(containerEl).setName(stateLabel);
     if (detail) state.setDesc(detail);
-    if (info.state === "read_only" || info.state === "expired" || info.state === "past_due") state.descEl.addClass("websync-storage-warning");
+    if (info.state === "read_only" || info.state === "expired" || info.state === "past_due") state.descEl.addClass("syncstone-storage-warning");
     if (info.hasCustomer) state.addButton((btn) => btn.setButtonText(t("p.plan.manage")).onClick(openPlanPage));
 
     // Limits of the plan.
@@ -646,7 +646,7 @@ export class WebSyncSettingsTab extends PluginSettingTab {
 
   /** Shared passphrase + "remember key" form, reused for unlocking a newly-picked vault and for re-unlocking an already-linked one. */
   private renderPassphraseForm(containerEl: HTMLElement, opts: PassphraseFormOptions): void {
-    const wrap = containerEl.createDiv({ cls: "websync-passphrase-form" });
+    const wrap = containerEl.createDiv({ cls: "syncstone-passphrase-form" });
 
     let passphrase = "";
     let remember = false;
@@ -664,7 +664,7 @@ export class WebSyncSettingsTab extends PluginSettingTab {
       .addToggle((toggle) => toggle.setValue(false).onChange((v) => (remember = v)));
 
     if (opts.error) {
-      wrap.createEl("p", { text: opts.error, cls: "websync-error-text" });
+      wrap.createEl("p", { text: opts.error, cls: "syncstone-error-text" });
     }
 
     const row = new Setting(wrap);
@@ -914,7 +914,7 @@ export class WebSyncSettingsTab extends PluginSettingTab {
             await this.plugin.saveSettings();
             void this.plugin.configSyncEngine?.run().catch((err) => console.error("Syncstone: Einstellungs-Sync fehlgeschlagen", err));
             // Keep the "n von 6 aktiv" hint current without collapsing the dropdown.
-            dropdown.parentElement?.querySelector(".websync-section-summary")?.setText(`${countActive()} von ${categories.length} aktiv`);
+            dropdown.parentElement?.querySelector(".syncstone-section-summary")?.setText(`${countActive()} von ${categories.length} aktiv`);
           }),
         );
     }

@@ -8,7 +8,7 @@
  */
 import { t } from "../i18n/index.js";
 import { type App, Menu, Notice } from "obsidian";
-import type WebSyncPlugin from "../main.js";
+import type SyncstonePlugin from "../main.js";
 import { openExternal } from "../openExternal.js";
 
 export type Status =
@@ -28,11 +28,11 @@ interface AppWithSettingTab extends App {
   setting: { open(): void; openTabById(id: string): void };
 }
 
-export class WebSyncStatusBar {
+export class SyncstoneStatusBar {
   /** Set by main.ts: re-renders the header icons. */
   onRefresh: (() => void) | null = null;
 
-  constructor(private readonly plugin: WebSyncPlugin) {}
+  constructor(private readonly plugin: SyncstonePlugin) {}
 
   start(): void {
     this.refresh();
@@ -47,7 +47,7 @@ export class WebSyncStatusBar {
     this.onRefresh?.();
   }
 
-  /** Read by the header action (WebSyncHeaderActions). */
+  /** Read by the header action (SyncstoneHeaderActions). */
   computeStatus(): Status {
     const { settings, syncEngine, liveSyncConnected } = this.plugin;
 

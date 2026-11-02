@@ -3,9 +3,9 @@ import * as Y from "yjs";
 import { CollabKind } from "./protocol.js";
 
 /** Origin for updates that came from a peer - never echoed back out. */
-const REMOTE_ORIGIN = Symbol("websync-remote");
+const REMOTE_ORIGIN = Symbol("syncstone-remote");
 /** Origin for the initial text the host puts into a fresh document - joiners get it via the state reply, not as a broadcast. */
-const SEED_ORIGIN = Symbol("websync-seed");
+const SEED_ORIGIN = Symbol("syncstone-seed");
 /** y-protocols' own origin for "this device changed its awareness state". */
 const LOCAL_AWARENESS_ORIGIN = "local";
 /** Origin we pass when removing a departed peer's states - must not be mistaken for a peer id. */

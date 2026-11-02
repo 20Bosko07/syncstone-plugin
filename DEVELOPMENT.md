@@ -17,7 +17,7 @@ Copy `manifest.json`, `main.js` and `styles.css` to `<vault>/.obsidian/plugins/s
 It is **copied** from the server repository, never edited here:
 
 ```bash
-pnpm sync-shared ../websync
+pnpm sync-shared ../syncstone
 ```
 
 ## Releasing

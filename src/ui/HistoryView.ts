@@ -1,10 +1,10 @@
 import { t } from "../i18n/index.js";
 import { ItemView, TFile, setIcon, type WorkspaceLeaf } from "obsidian";
 import { actionIcon, actionLabel, dayLabel, displayPath, entryKind, fromBase64, timeLabel, whoLabel, type RevisionEntry } from "@websync/shared";
-import type WebSyncPlugin from "../main.js";
+import type SyncstonePlugin from "../main.js";
 import { baseName, formatBytes } from "./historyFormat.js";
 
-export const HISTORY_VIEW_TYPE = "websync-history";
+export const HISTORY_VIEW_TYPE = "syncstone-history";
 
 /**
  * Version history in the sidebar (right by default, movable like any Obsidian view) - the same panel as in the web
@@ -30,7 +30,7 @@ export class HistoryView extends ItemView {
 
   constructor(
     leaf: WorkspaceLeaf,
-    private readonly plugin: WebSyncPlugin,
+    private readonly plugin: SyncstonePlugin,
   ) {
     super(leaf);
   }
@@ -48,7 +48,7 @@ export class HistoryView extends ItemView {
   }
 
   async onOpen(): Promise<void> {
-    this.contentEl.addClass("websync-history");
+    this.contentEl.addClass("syncstone-history");
     this.registerEvent(this.app.workspace.on("file-open", () => this.mode === "file" && void this.reload()));
     // After an edit the upload runs a moment later (debounce + transfer): look again once it had time to land.
     this.registerEvent(
@@ -191,7 +191,7 @@ export class HistoryView extends ItemView {
     const el = this.contentEl;
     el.empty();
 
-    const toggle = el.createDiv({ cls: "websync-history-toggle" });
+    const toggle = el.createDiv({ cls: "syncstone-history-toggle" });
     for (const [mode, label] of [
       ["file", t("p.modeFile")],
       ["vault", t("p.modeVault")],
@@ -206,10 +206,10 @@ export class HistoryView extends ItemView {
     if (this.mode === "file") this.renderFile(el);
     else this.renderVault(el);
 
-    if (this.loading) el.createDiv({ cls: "websync-history-empty", text: t("p.loading") });
-    if (this.error) el.createDiv({ cls: "websync-history-empty mod-error", text: this.error });
+    if (this.loading) el.createDiv({ cls: "syncstone-history-empty", text: t("p.loading") });
+    if (this.error) el.createDiv({ cls: "syncstone-history-empty mod-error", text: this.error });
     if (this.nextBefore && !this.loading) {
-      const more = el.createEl("button", { cls: "websync-history-more", text: t("p.loadOlder") });
+      const more = el.createEl("button", { cls: "syncstone-history-more", text: t("p.loadOlder") });
       more.onclick = () => {
         const vaultId = this.vaultId;
         if (!vaultId || !this.nextBefore) return;
@@ -218,7 +218,7 @@ export class HistoryView extends ItemView {
     }
     if (this.retentionDays > 0) {
       el.createDiv({
-        cls: "websync-history-footer",
+        cls: "syncstone-history-footer",
         text:
           this.mode === "file"
             ? t("p.footerFile", { days: this.retentionDays })
@@ -232,32 +232,32 @@ export class HistoryView extends ItemView {
     const active = this.app.workspace.getActiveFile();
     if (!first && !this.loading && !this.error) {
       el.createDiv({
-        cls: "websync-history-empty",
+        cls: "syncstone-history-empty",
         text: active ? t("p.noHistory") : t("p.noFile"),
       });
       return;
     }
     if (!first) return;
 
-    const title = el.createDiv({ cls: "websync-history-title" });
+    const title = el.createDiv({ cls: "syncstone-history-title" });
     const path = this.pin || !active ? displayPath(first) : active.path;
-    title.createSpan({ cls: "websync-history-name", text: baseName(path), attr: { title: path } });
-    if (first.action === "delete") title.createSpan({ cls: "websync-history-faint", text: t("p.deletedSuffix") });
+    title.createSpan({ cls: "syncstone-history-name", text: baseName(path), attr: { title: path } });
+    if (first.action === "delete") title.createSpan({ cls: "syncstone-history-faint", text: t("p.deletedSuffix") });
     const refresh = title.createDiv({ cls: "clickable-icon", attr: { "aria-label": t("p.reload") } });
     setIcon(refresh, "refresh-cw");
     refresh.onclick = () => void this.reload();
 
     const accounts = new Set(this.entries.map((e) => e.username).filter(Boolean)).size > 1;
-    const list = el.createDiv({ cls: "websync-history-list" });
+    const list = el.createDiv({ cls: "syncstone-history-list" });
     this.entries.forEach((entry, index) => {
-      const row = list.createDiv({ cls: `websync-history-item${entry.id === this.selectedId ? " is-selected" : ""}` });
-      const icon = row.createDiv({ cls: `websync-history-icon is-${entry.action}` });
+      const row = list.createDiv({ cls: `syncstone-history-item${entry.id === this.selectedId ? " is-selected" : ""}` });
+      const icon = row.createDiv({ cls: `syncstone-history-icon is-${entry.action}` });
       setIcon(icon, actionIcon(entry));
-      const body = row.createDiv({ cls: "websync-history-body" });
-      const head = body.createDiv({ cls: "websync-history-line", text: `${dayLabel(entry.createdAt)}, ${timeLabel(entry.createdAt)}` });
-      if (this.mode === "file" && index === 0 && entry.action !== "delete") head.createSpan({ cls: "websync-history-badge", text: t("p.current") });
+      const body = row.createDiv({ cls: "syncstone-history-body" });
+      const head = body.createDiv({ cls: "syncstone-history-line", text: `${dayLabel(entry.createdAt)}, ${timeLabel(entry.createdAt)}` });
+      if (this.mode === "file" && index === 0 && entry.action !== "delete") head.createSpan({ cls: "syncstone-history-badge", text: t("p.current") });
       const size = entry.action !== "rename" && entry.action !== "delete" ? ` · ${formatBytes(entry.size)}` : "";
-      body.createDiv({ cls: "websync-history-note", text: `${actionLabel(entry)} · ${whoLabel(entry, accounts)}${size}` });
+      body.createDiv({ cls: "syncstone-history-note", text: `${actionLabel(entry)} · ${whoLabel(entry, accounts)}${size}` });
       row.onclick = () => {
         this.selectedId = entry.id;
         this.render();
@@ -267,8 +267,8 @@ export class HistoryView extends ItemView {
   }
 
   private renderVault(el: HTMLElement): void {
-    const filters = el.createDiv({ cls: "websync-history-filters" });
-    const searchRow = filters.createDiv({ cls: "websync-history-title" });
+    const filters = el.createDiv({ cls: "syncstone-history-filters" });
+    const searchRow = filters.createDiv({ cls: "syncstone-history-title" });
     const search = searchRow.createEl("input", { type: "search", placeholder: t("p.filter"), value: this.query });
     const refresh = searchRow.createDiv({ cls: "clickable-icon", attr: { "aria-label": t("p.reload") } });
     setIcon(refresh, "refresh-cw");
@@ -281,7 +281,7 @@ export class HistoryView extends ItemView {
       ["onlyDeleted", t("p.onlyDeleted")],
       ["showSettings", t("p.settings")],
     ] as const) {
-      const wrap = filters.createEl("label", { cls: "websync-history-check" });
+      const wrap = filters.createEl("label", { cls: "syncstone-history-check" });
       const box = wrap.createEl("input", { type: "checkbox" });
       box.checked = this[key];
       box.onchange = () => {
@@ -290,7 +290,7 @@ export class HistoryView extends ItemView {
       };
       wrap.appendText(` ${label}`);
     }
-    const listHost = el.createDiv({ cls: "websync-history-list" });
+    const listHost = el.createDiv({ cls: "syncstone-history-list" });
     this.renderVaultList(listHost);
   }
 
@@ -309,14 +309,14 @@ export class HistoryView extends ItemView {
       const label = dayLabel(entry.createdAt);
       if (label !== day) {
         day = label;
-        host.createDiv({ cls: "websync-history-day", text: label });
+        host.createDiv({ cls: "syncstone-history-day", text: label });
       }
       shown++;
-      const row = host.createDiv({ cls: "websync-history-item" });
-      setIcon(row.createDiv({ cls: `websync-history-icon is-${entry.action}` }), actionIcon(entry));
-      const body = row.createDiv({ cls: "websync-history-body" });
-      body.createDiv({ cls: `websync-history-line${entry.action === "delete" ? " is-deleted" : ""}`, text: path, attr: { title: path } });
-      body.createDiv({ cls: "websync-history-note", text: `${timeLabel(entry.createdAt)} · ${actionLabel(entry)} · ${whoLabel(entry, accounts)}` });
+      const row = host.createDiv({ cls: "syncstone-history-item" });
+      setIcon(row.createDiv({ cls: `syncstone-history-icon is-${entry.action}` }), actionIcon(entry));
+      const body = row.createDiv({ cls: "syncstone-history-body" });
+      body.createDiv({ cls: `syncstone-history-line${entry.action === "delete" ? " is-deleted" : ""}`, text: path, attr: { title: path } });
+      body.createDiv({ cls: "syncstone-history-note", text: `${timeLabel(entry.createdAt)} · ${actionLabel(entry)} · ${whoLabel(entry, accounts)}` });
       if (kind !== "folder") {
         row.onclick = () => {
           this.mode = "file";
@@ -328,7 +328,7 @@ export class HistoryView extends ItemView {
       }
     }
     if (shown === 0 && !this.loading && !this.error) {
-      host.createDiv({ cls: "websync-history-empty", text: this.entries.length === 0 ? t("p.noChanges") : t("p.noMatches") });
+      host.createDiv({ cls: "syncstone-history-empty", text: this.entries.length === 0 ? t("p.noChanges") : t("p.noMatches") });
     }
   }
 }

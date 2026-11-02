@@ -10,7 +10,7 @@ export function createTransferTracker(): TransferTracker {
   return new TransferTracker(TRANSFER_PROGRESS_DELAY_MS, TRANSFER_QUEUED_DELAY_MS);
 }
 
-const RING_CLASS = "websync-progress-ring";
+const RING_CLASS = "syncstone-progress-ring";
 const RADIUS = 6;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 const SVG_NS = "http://www.w3.org/2000/svg";
@@ -23,14 +23,14 @@ function createFailRing(): SVGSVGElement {
   svg.setAttribute("width", "14");
   svg.setAttribute("height", "14");
   const circle = document.createElementNS(SVG_NS, "circle");
-  circle.setAttribute("class", "websync-fail-circle");
+  circle.setAttribute("class", "syncstone-fail-circle");
   circle.setAttribute("cx", "8");
   circle.setAttribute("cy", "8");
   circle.setAttribute("r", String(RADIUS));
   svg.appendChild(circle);
   for (const d of ["M8 4.6v4", "M8 11.3v.01"]) {
     const mark = document.createElementNS(SVG_NS, "path");
-    mark.setAttribute("class", "websync-fail-mark");
+    mark.setAttribute("class", "syncstone-fail-mark");
     mark.setAttribute("d", d);
     svg.appendChild(mark);
   }
@@ -43,7 +43,7 @@ function createRing(): SVGSVGElement {
   svg.setAttribute("viewBox", "0 0 16 16");
   svg.setAttribute("width", "14");
   svg.setAttribute("height", "14");
-  for (const cls of ["websync-progress-track", "websync-progress-bar"]) {
+  for (const cls of ["syncstone-progress-track", "syncstone-progress-bar"]) {
     const circle = document.createElementNS(SVG_NS, "circle");
     circle.setAttribute("class", cls);
     circle.setAttribute("cx", "8");
@@ -134,7 +134,7 @@ export class ExplorerProgressRings {
           ring.prepend(tip);
           continue;
         }
-        const bar = ring.querySelector<SVGCircleElement>(".websync-progress-bar");
+        const bar = ring.querySelector<SVGCircleElement>(".syncstone-progress-bar");
         // Waiting = just the grey circle; once it moves there is always a visible start of the arc.
         const length = queued ? 0 : CIRCUMFERENCE * Math.max(0.04, fraction);
         bar?.setAttribute("stroke-dasharray", `${length} ${CIRCUMFERENCE}`);
