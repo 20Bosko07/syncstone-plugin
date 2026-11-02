@@ -1,6 +1,6 @@
 import esbuild from "esbuild";
 import process from "process";
-import builtins from "builtin-modules";
+import { builtinModules as builtins } from "node:module";
 
 // Follows the official Obsidian sample-plugin's esbuild setup:
 // https://github.com/obsidianmd/obsidian-sample-plugin/blob/master/esbuild.config.mjs

@@ -1,4 +1,4 @@
-import type { Extension, Range } from "@codemirror/state";
+import type { EditorState, Extension, Range } from "@codemirror/state";
 import { Annotation } from "@codemirror/state";
 import { Decoration, EditorView, ViewPlugin, WidgetType, type DecorationSet, type ViewUpdate } from "@codemirror/view";
 import { ySyncFacet } from "y-codemirror.next";
@@ -19,6 +19,14 @@ interface AwarenessState {
   cursor?: { anchor?: Y.RelativePosition | null; head?: Y.RelativePosition | null } | null;
   user?: { name?: string; color?: string; colorLight?: string };
 }
+
+/** What y-codemirror.next keeps in its facet (the package ships no types for it). */
+interface YSyncConfig {
+  ytext: Y.Text;
+  awareness: Awareness;
+}
+
+const syncConfig = (state: EditorState): YSyncConfig => state.facet(ySyncFacet) as YSyncConfig;
 
 class RemoteCaretWidget extends WidgetType {
   constructor(
@@ -86,7 +94,7 @@ class RemoteSelectionsPlugin {
   private readonly listener: (changes: { added: number[]; updated: number[]; removed: number[] }) => void;
 
   constructor(private readonly view: EditorView) {
-    this.awareness = view.state.facet(ySyncFacet).awareness;
+    this.awareness = syncConfig(view.state).awareness;
     this.listener = ({ added, updated, removed }) => {
       const own = this.awareness.doc.clientID;
       if ([...added, ...updated, ...removed].some((id) => id !== own)) view.dispatch({ annotations: [refresh.of(true)] });
@@ -99,12 +107,12 @@ class RemoteSelectionsPlugin {
   }
 
   update(update: ViewUpdate): void {
-    const { ytext, awareness } = update.state.facet(ySyncFacet);
+    const { ytext, awareness } = syncConfig(update.state);
     const ydoc = ytext.doc as Y.Doc;
     const doc = update.state.doc;
 
     // Publish our own cursor.
-    const local = awareness.getLocalState();
+    const local = awareness.getLocalState() as AwarenessState | null;
     if (local != null) {
       const hasFocus = update.view.hasFocus && update.view.dom.ownerDocument.hasFocus();
       const sel = hasFocus ? update.state.selection.main : null;
