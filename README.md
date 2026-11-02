@@ -1,4 +1,8 @@
 <p align="center">
+  <a href="https://syncst.one"><img src="assets/banner.png" alt="Syncstone" width="640"></a>
+</p>
+
+<p align="center">
   <strong>Your Obsidian vault on every device. Encrypted, always in sync.</strong>
 </p>
 
