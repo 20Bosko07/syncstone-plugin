@@ -78,12 +78,12 @@ export class LocalIndex {
   }
 
   async get(fileId: string): Promise<LocalIndexRecord | undefined> {
-    return this.request(this.store("readonly").get(fileId));
+    return this.request<LocalIndexRecord | undefined>(this.store("readonly").get(fileId));
   }
 
   async getByPath(localPath: string): Promise<LocalIndexRecord | undefined> {
     const index = this.store("readonly").index(PATH_INDEX);
-    return this.request(index.get(localPath));
+    return this.request<LocalIndexRecord | undefined>(index.get(localPath));
   }
 
   async put(record: LocalIndexRecord): Promise<void> {
@@ -96,7 +96,7 @@ export class LocalIndex {
   }
 
   async getBase(fileId: string): Promise<SyncBase | undefined> {
-    return this.request(this.baseStore("readonly").get(fileId));
+    return this.request<SyncBase | undefined>(this.baseStore("readonly").get(fileId));
   }
 
   async putBase(base: SyncBase): Promise<void> {
@@ -113,7 +113,7 @@ export class LocalIndex {
   }
 
   async getAll(): Promise<LocalIndexRecord[]> {
-    return this.request(this.store("readonly").getAll());
+    return this.request<LocalIndexRecord[]>(this.store("readonly").getAll());
   }
 
   private request<T>(req: IDBRequest<T>): Promise<T> {
