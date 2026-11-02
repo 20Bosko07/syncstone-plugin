@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Problem with your account, a payment or the Syncstone service
+    url: https://syncst.one
+    about: Account, billing and server questions are not handled here. Write to support@syncst.one so your details stay private.
+  - name: Report a security problem
+    url: https://github.com/syncst-one/syncstone-plugin/security/policy
+    about: Please do not open a public issue for security problems. Follow the steps in the security policy.
