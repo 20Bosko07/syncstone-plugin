@@ -1,9 +1,9 @@
 {
   "id": "websync",
   "name": "Syncstone",
-  "version": "0.2.16",
-  "minAppVersion": "1.4.0",
-  "description": "End-to-end encrypted vault sync with Syncstone.",
+  "version": "0.2.17",
+  "minAppVersion": "1.8.7",
+  "description": "Sync your vault across devices with end-to-end encryption.",
   "author": "Syncstone",
   "authorUrl": "https://syncst.one",
   "isDesktopOnly": false

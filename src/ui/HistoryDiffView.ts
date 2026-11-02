@@ -236,7 +236,7 @@ export class HistoryDiffView extends ItemView {
     }
 
     const body = el.createDiv({ cls: "websync-revdiff-body" });
-    void this.fillBody(body, entry, isLiveFile ? (live as TFile) : null);
+    void this.fillBody(body, entry, live instanceof TFile ? live : null);
   }
 
   private async fillBody(body: HTMLElement, entry: RevisionEntry, liveFile: TFile | null): Promise<void> {

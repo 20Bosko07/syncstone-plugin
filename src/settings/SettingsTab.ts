@@ -221,7 +221,7 @@ export class WebSyncSettingsTab extends PluginSettingTab {
 
       const wrap = containerEl.createDiv({ cls: "websync-pairing" });
       wrap.createEl("p", { text: t("p.confirmCode") });
-      wrap.createEl("div", { text: this.pairingCode ?? "", cls: "websync-pairing-code" });
+      wrap.createDiv({ text: this.pairingCode ?? "", cls: "websync-pairing-code" });
 
       if (this.verificationUrl) {
         const linkPara = wrap.createEl("p", { cls: "websync-pairing-link" });

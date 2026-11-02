@@ -128,28 +128,28 @@ export default class WebSyncPlugin extends Plugin {
       }),
     );
     this.addCommand({
-      id: "websync-share-link",
+      id: "share-link",
       name: t("p.pub.cmd"),
       callback: () => void this.openPublish(this.app.workspace.getActiveFile()),
     });
     this.addCommand({
-      id: "websync-file-history",
+      id: "file-history",
       name: t("p.cmd.fileHistory"),
       callback: () => void this.openHistory(this.app.workspace.getActiveFile()),
     });
     this.addCommand({
-      id: "websync-vault-history",
+      id: "vault-history",
       name: t("p.cmd.vaultHistory"),
       callback: () => void this.openHistory(null, true),
     });
 
     this.addCommand({
-      id: "websync-sync-log",
+      id: "sync-log",
       name: t("p.log.cmd"),
       callback: () => this.openSyncLog(),
     });
     this.addCommand({
-      id: "websync-sync-now",
+      id: "sync-now",
       name: t("p.cmd.syncNow"),
       callback: () => void this.runManualSync(),
     });
@@ -265,16 +265,18 @@ export default class WebSyncPlugin extends Plugin {
   notifyWriteBlocked(reason: "read-only" | "storage-full"): void {
     if (this.blockedNoticeShown === reason) return;
     this.blockedNoticeShown = reason;
-    const message = document.createDocumentFragment();
+    const message = createFragment();
     message.append(t(reason === "read-only" ? "p.notice.readOnly" : "p.notice.storageFull"));
     const webUrl = this.account?.webUrl;
     if (webUrl && this.account?.billingState !== "unmanaged") {
       message.append(" ");
-      const link = document.createElement("a");
-      link.textContent = t("p.openPlan");
-      link.href = `${webUrl.replace(/\/+$/, "")}/account/billing`;
-      link.target = "_blank";
-      message.append(link);
+      message.append(
+        createEl("a", {
+          text: t("p.openPlan"),
+          href: `${webUrl.replace(/\/+$/, "")}/account/billing`,
+          attr: { target: "_blank" },
+        }),
+      );
     }
     new Notice(message, 20_000);
   }

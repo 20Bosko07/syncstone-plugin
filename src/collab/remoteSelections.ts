@@ -29,11 +29,11 @@ class RemoteCaretWidget extends WidgetType {
   }
 
   toDOM(): HTMLElement {
-    const caret = document.createElement("span");
+    const caret = createSpan();
     caret.className = "cm-ySelectionCaret";
     caret.style.backgroundColor = this.color;
     caret.style.borderColor = this.color;
-    const info = document.createElement("div");
+    const info = createDiv();
     info.className = "cm-ySelectionInfo";
     info.textContent = this.name;
     // Word joiners keep the empty inline box from collapsing without adding any width.

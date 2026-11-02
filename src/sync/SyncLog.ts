@@ -44,7 +44,7 @@ export class SyncLog {
   private entries: LogEntry[] = [];
   private readonly listeners = new Set<() => void>();
   private readonly totals = new Map<LogKind, number>();
-  private saveTimer: ReturnType<typeof setTimeout> | null = null;
+  private saveTimer: number | null = null;
   private dirty = false;
 
   constructor(
@@ -112,7 +112,7 @@ export class SyncLog {
 
   /** Writes what is pending now (shutdown). */
   async flush(): Promise<void> {
-    if (this.saveTimer !== null) clearTimeout(this.saveTimer);
+    if (this.saveTimer !== null) window.clearTimeout(this.saveTimer);
     this.saveTimer = null;
     await this.save();
   }
@@ -123,7 +123,7 @@ export class SyncLog {
 
   private scheduleSave(): void {
     if (this.saveTimer !== null) return;
-    this.saveTimer = setTimeout(() => {
+    this.saveTimer = window.setTimeout(() => {
       this.saveTimer = null;
       void this.save();
     }, SAVE_DELAY_MS);

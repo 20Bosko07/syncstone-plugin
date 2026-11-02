@@ -17,6 +17,6 @@ function hostname(): string | null {
 export function defaultDeviceName(): string {
   const host = hostname();
   if (host) return host;
-  const platform = Platform.isAndroidApp ? "Android" : Platform.isIosApp ? "iOS" : Platform.isMobile ? "Mobile" : navigator.platform || "Desktop";
+  const platform = Platform.isAndroidApp ? "Android" : Platform.isIosApp ? "iOS" : Platform.isMobile ? "Mobile" : Platform.isMacOS ? "macOS" : Platform.isWin ? "Windows" : Platform.isLinux ? "Linux" : "Desktop";
   return t("p.defaultDevice", { platform });
 }

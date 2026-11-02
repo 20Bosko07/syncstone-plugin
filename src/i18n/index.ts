@@ -1,3 +1,4 @@
+import { getLanguage } from "obsidian";
 import { DEFAULT_LOCALE, LOCALES, setHistoryTexts, type Locale } from "@websync/shared";
 import { de } from "./de";
 import { en, type MessageKey } from "./en";
@@ -14,13 +15,13 @@ export type { MessageKey };
 
 const translations: Record<Locale, Partial<Record<MessageKey, string>>> = { en, de, fr, es, it, nl };
 
-/** Obsidian keeps the chosen interface language in localStorage ("language"; absent = English). */
+/** Obsidian's interface language (`getLanguage()`, available since 1.8.7; anything that is not one of ours = English). */
 export function currentLocale(): Locale {
   let raw = "";
   try {
-    raw = window.localStorage.getItem("language") ?? "";
+    raw = getLanguage();
   } catch {
-    /* no storage: English */
+    /* language not available: English */
   }
   const code = raw.toLowerCase().split(/[-_]/)[0];
   return (LOCALES as readonly string[]).includes(code) ? (code as Locale) : DEFAULT_LOCALE;
