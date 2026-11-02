@@ -23,7 +23,7 @@ pnpm install
 pnpm dev          # builds main.js and watches for changes
 ```
 
-Copy `manifest.json`, `main.js` and `styles.css` to `<vault>/.obsidian/plugins/websync/` in a test vault. Use a vault you can afford to lose while you try things.
+Copy `manifest.json`, `main.js` and `styles.css` to `<vault>/.obsidian/plugins/syncstone/` in a test vault. Use a vault you can afford to lose while you try things.
 
 Before you open a pull request:
 
