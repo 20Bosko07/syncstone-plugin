@@ -174,15 +174,19 @@ export default class SyncstonePlugin extends Plugin {
     this.backupNoticeOpen = true;
     new BackupNoticeModal(
       this.app,
-      async () => {
-        this.settings.backupAcknowledged = true;
-        await this.saveSettings();
-        await this.tryStartSync();
-      },
+      () => this.acknowledgeBackup(),
       () => {
         this.backupNoticeOpen = false;
       },
     ).open();
+  }
+
+  /** The user confirmed they have a backup (from the notice, the settings tab or the status menu): start syncing. */
+  async acknowledgeBackup(): Promise<void> {
+    this.settings.backupAcknowledged = true;
+    await this.saveSettings();
+    await this.tryStartSync();
+    this.settingsTab?.display();
   }
 
   openSyncLog(): void {
