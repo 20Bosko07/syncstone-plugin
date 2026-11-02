@@ -27,6 +27,10 @@
 Syncstone keeps your Obsidian vault in sync on all your devices, end-to-end encrypted. Your notes are encrypted on your
 device before they leave it, so only you can read them.
 
+> **Syncstone is still in development.** It works, but you may run into bugs. Please keep your own backup of your
+> vault, and report problems in the [issues](https://github.com/syncst-one/syncstone-plugin/issues) or at
+> [support@syncst.one](mailto:support@syncst.one).
+
 - **Encrypted on your device.** The server only ever stores ciphertext.
 - **Every device.** Desktop and mobile, plus your vault in any browser. No Obsidian needed.
 - **Live collaboration.** Several people, one note, every cursor, in real time.
